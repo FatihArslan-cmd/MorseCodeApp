@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Navigation hook
-import { StackNavigationProp } from '@react-navigation/stack'; // Assuming you use stack navigation
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { morseAlphabet } from '../utils/morseAlphabet';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 type RootStackParamList = {
-  Chart: undefined; 
+  Chart: undefined;
 };
 
 type MorseCodeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Chart'>;
 
 const MorseCodeApp: React.FC = () => {
   const [morseCode, setMorseCode] = useState<string>('');
+  const [recognizedLetters, setRecognizedLetters] = useState<string[]>([]);
   const [isPressing, setIsPressing] = useState<boolean>(false);
   const [startTime, setStartTime] = useState<number>(0);
-  const navigation = useNavigation<MorseCodeScreenNavigationProp>(); // Use navigation hook with type
+  const navigation = useNavigation<MorseCodeScreenNavigationProp>(); 
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const handlePressIn = () => {
     setIsPressing(true);
@@ -40,12 +42,11 @@ const MorseCodeApp: React.FC = () => {
           key => morseAlphabet[key] === morseCode
         );
         if (foundKey) {
-          Alert.alert(`Morse Kod: ${morseCode} => Harf: ${foundKey}`);
-        } else {
-          Alert.alert(`Morse Kod: ${morseCode} tanınmadı.`);
+          animateLetter(foundKey);
+          setRecognizedLetters(prev => [...prev, foundKey]);
         }
         setMorseCode('');
-      }, 2000); // 2 saniye bekle
+      }, 2000); 
     }
 
     return () => {
@@ -54,6 +55,25 @@ const MorseCodeApp: React.FC = () => {
       }
     };
   }, [morseCode, isPressing]);
+
+  const animateLetter = (letter: string) => {
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 1000,
+      easing: Easing.bounce,
+      useNativeDriver: true,
+    }).start(() => {
+      animatedValue.setValue(0);
+    });
+  };
+
+  const handleSpace = () => {
+    setRecognizedLetters(prev => [...prev, ' ']);
+  };
+
+  const handleDelete = () => {
+    setRecognizedLetters(prev => prev.slice(0, -1));
+  };
 
   return (
     <View style={styles.container}>
@@ -69,6 +89,28 @@ const MorseCodeApp: React.FC = () => {
         <Text style={styles.buttonText}>Basılı Tut</Text>
       </TouchableOpacity>
       <Text style={styles.morseCode}>{morseCode}</Text>
+      <View style={styles.lettersContainer}>
+        {recognizedLetters.map((letter, index) => (
+          <Animated.Text key={index} style={[styles.letter, {
+            transform: [{
+              translateY: animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, -50]
+              })
+            }],
+          }]}>
+            {letter}
+          </Animated.Text>
+        ))}
+      </View>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>
+          <Text style={styles.buttonText}>Boşluk</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+          <Text style={styles.buttonText}>Sil</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -79,6 +121,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
+  },
+  arrowContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
   },
   title: {
     fontSize: 24,
@@ -99,6 +146,31 @@ const styles = StyleSheet.create({
   morseCode: {
     marginTop: 20,
     fontSize: 32,
+  },
+  lettersContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 20,
+    minHeight: 50,
+  },
+  letter: {
+    fontSize: 32,
+    marginHorizontal: 5,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  spaceButton: {
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  deleteButton: {
+    padding: 10,
+    backgroundColor: '#ff4d4d',
+    borderRadius: 5,
   },
 });
 

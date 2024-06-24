@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Appbar, Card, Button, Title } from 'react-native-paper';
 
 type RootStackParamList = {
   Home: undefined;
@@ -14,14 +15,31 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Button
-        title="Go to Morse Code Converter"
-        onPress={() => navigation.navigate('MorseCodeConverter')}
-      />
-      <Button
-        title="Go to Morse Code App"
-        onPress={() => navigation.navigate('MorseCodeApp')}
-      />
+      <Appbar.Header>
+        <Appbar.Content title="Learn Morse Code" />
+      </Appbar.Header>
+      <View style={styles.content}>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title>Morse Code Converter</Title>
+          </Card.Content>
+          <Card.Actions>
+            <Button mode="contained" onPress={() => navigation.navigate('MorseCodeConverter')}>
+              Go to Converter
+            </Button>
+          </Card.Actions>
+        </Card>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title>Morse Code Simulation</Title>
+          </Card.Content>
+          <Card.Actions>
+            <Button mode="contained" onPress={() => navigation.navigate('MorseCodeApp')}>
+              Go to Simulation
+            </Button>
+          </Card.Actions>
+        </Card>
+      </View>
     </View>
   );
 };
@@ -29,10 +47,16 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#f8f8ff',
+  },
+  content: {
     padding: 16,
+  },
+  card: {
+    marginVertical: 8,
+  },
+  button: {
+    margin: 8,
   },
 });
 

@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, View } from 'react-native';
 import { TextInput, Button, Appbar, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
-import { convertToMorse } from '../utils/morseAlphabet'; // Morse kodları dosyamızı içe aktarın
+import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Morse kodları dosyamızı içe aktarın
 
 const MorseCodeConverter = () => {
   const [inputText, setInputText] = useState('');
-  const [morseCode, setMorseCode] = useState('');
+  const [convertedText, setConvertedText] = useState('');
+  const [isTextToMorse, setIsTextToMorse] = useState(true);
 
   const handleConvert = () => {
-    const convertedText = convertToMorse(inputText);
-    setMorseCode(convertedText);
+    if (isTextToMorse) {
+      const converted = convertToMorse(inputText);
+      setConvertedText(converted);
+    } else {
+      const converted = convertToText(inputText);
+      setConvertedText(converted);
+    }
+  };
+
+  const toggleConversionMode = () => {
+    setIsTextToMorse(!isTextToMorse);
+    setConvertedText(''); // Reset the converted text
   };
 
   return (
@@ -18,24 +29,27 @@ const MorseCodeConverter = () => {
         <ScrollView contentContainerStyle={styles.container}>
           <Card style={styles.card}>
             <Card.Content>
-              <Title>Enter Text</Title>
+              <Title>{isTextToMorse ? 'Enter Text' : 'Enter Morse Code'}</Title>
               <TextInput
-                label="Text"
+                label={isTextToMorse ? 'Text' : 'Morse Code'}
                 mode="outlined"
                 value={inputText}
                 onChangeText={text => setInputText(text)}
                 style={styles.input}
               />
               <Button mode="contained" onPress={handleConvert} style={styles.button}>
-                Convert to Morse Code
+                {isTextToMorse ? 'Convert to Morse Code' : 'Convert to Text'}
+              </Button>
+              <Button mode="text" onPress={toggleConversionMode} style={styles.toggleButton}>
+                {isTextToMorse ? 'Switch to Morse to Text' : 'Switch to Text to Morse'}
               </Button>
             </Card.Content>
           </Card>
-          {morseCode !== '' && (
+          {convertedText !== '' && (
             <Card style={styles.card}>
               <Card.Content>
-                <Title>Morse Code</Title>
-                <Paragraph style={styles.morseText}>{morseCode}</Paragraph>
+                <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
+                <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
               </Card.Content>
             </Card>
           )}
@@ -61,7 +75,10 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
   },
-  morseText: {
+  toggleButton: {
+    marginTop: 10,
+  },
+  convertedText: {
     fontSize: 18,
     letterSpacing: 1.5,
   },
