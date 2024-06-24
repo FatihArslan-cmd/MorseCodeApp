@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
   convertedText: {
     fontSize: 18,
     letterSpacing: 1.5,
+    fontWeight:'bold'
   },
 });
 

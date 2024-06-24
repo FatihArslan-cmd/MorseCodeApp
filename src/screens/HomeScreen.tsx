@@ -12,7 +12,7 @@ type RootStackParamList = {
 
 const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
-
+  
   return (
     <View style={styles.container}>
       <Appbar.Header>
@@ -20,6 +20,8 @@ const HomeScreen = () => {
       </Appbar.Header>
       <View style={styles.content}>
         <Card style={styles.card}>
+        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+
           <Card.Content>
             <Title>Morse Code Converter</Title>
           </Card.Content>
@@ -30,6 +32,8 @@ const HomeScreen = () => {
           </Card.Actions>
         </Card>
         <Card style={styles.card}>
+        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+
           <Card.Content>
             <Title>Morse Code Simulation</Title>
           </Card.Content>

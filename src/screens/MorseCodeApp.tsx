@@ -6,6 +6,8 @@ import { morseAlphabet } from '../utils/morseAlphabet';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
+import { Modal, Portal, Button, PaperProvider } from 'react-native-paper';
 
 type RootStackParamList = {
   Chart: undefined;
@@ -18,6 +20,7 @@ const MorseCodeApp: React.FC = () => {
   const [recognizedLetters, setRecognizedLetters] = useState<string[]>([]);
   const [isPressing, setIsPressing] = useState<boolean>(false);
   const [startTime, setStartTime] = useState<number>(0);
+  const [modalVisible, setModalVisible] = useState<boolean>(false); // Modal state
   const navigation = useNavigation<MorseCodeScreenNavigationProp>(); 
   const animatedValue = useRef(new Animated.Value(0)).current;
   const blinkingDot = useRef(new Animated.Value(0)).current;
@@ -77,6 +80,7 @@ const MorseCodeApp: React.FC = () => {
       ])
     ).start();
   }, []);
+
   const animateLetter = (letter: string) => {
     Animated.timing(animatedValue, {
       toValue: 1,
@@ -96,59 +100,75 @@ const MorseCodeApp: React.FC = () => {
     setRecognizedLetters(prev => prev.slice(0, -1));
   };
 
+  const handleInfoPress = () => {
+    setModalVisible(true);
+  };
+
+  const hideModal = () => {
+    setModalVisible(false);
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('Chart')} style={styles.arrowContainer}>
-        <Entypo name="list" size={32} color="black" />
-      </TouchableOpacity>
-      <Animatable.View animation="fadeInDownBig" duration={1000}>
-
-      <Text style={styles.title}>Morse Kod Girişi</Text>
-      </Animatable.View>
-
-      <Animatable.View animation="bounceIn" duration={1000}>
-        <TouchableOpacity
-          style={styles.button}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-        >
-          <Text style={styles.buttonText}>Basılı Tut</Text>
+    <PaperProvider>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.navigate('Chart')} style={styles.arrowContainer}>
+          <Entypo name="list" size={32} color="black" />
         </TouchableOpacity>
-      </Animatable.View>
-      <Text style={styles.morseCode}>{morseCode}</Text>
-      <View style={styles.lettersContainer}>
-        {recognizedLetters.map((letter, index) => (
-          <Animated.Text key={index} style={[styles.letter, {
-            transform: [{
-              translateY: animatedValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, -10]
-              })
-            }],
+        <TouchableOpacity onPress={handleInfoPress} style={styles.infoButton}>
+          <Feather name="info" size={32} color="black" />
+        </TouchableOpacity>
+        <Animatable.View animation="fadeInDownBig" duration={1000}>
+          <Text style={styles.title}>Morse Kod Girişi</Text>
+        </Animatable.View>
+        <Animatable.View animation="bounceIn" duration={1000}>
+          <TouchableOpacity
+            style={styles.button}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+          >
+            <Text style={styles.buttonText}>Basılı Tut</Text>
+          </TouchableOpacity>
+        </Animatable.View>
+        <Text style={styles.morseCode}>{morseCode}</Text>
+        <View style={styles.lettersContainer}>
+          {recognizedLetters.map((letter, index) => (
+            <Animated.Text key={index} style={[styles.letter, {
+              transform: [{
+                translateY: animatedValue.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, -10]
+                })
+              }],
+            }]}>
+              {letter}
+            </Animated.Text>
+          ))}
+          <Animated.Text style={[styles.letter, {
+            opacity: blinkingDot
           }]}>
-            {letter}
+            .
           </Animated.Text>
-        ))}
-         <Animated.Text style={[styles.letter, {
-          opacity: blinkingDot
-        }]}>
-          .
-        </Animated.Text>
+        </View>
+        <Animatable.View animation="bounceIn" duration={1000}>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>
+              <MaterialCommunityIcons name="keyboard-space" size={32} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+              <MaterialCommunityIcons name="backspace" size={32} color="white" />
+            </TouchableOpacity>
+          </View>
+        </Animatable.View>
       </View>
-      <Animatable.View animation="bounceIn" duration={1000}>
-
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>
-        <MaterialCommunityIcons name="keyboard-space" size={32} color="white" />
-
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-        <MaterialCommunityIcons name="backspace" size={32} color="white" />
-        </TouchableOpacity>
-      </View>
-      </Animatable.View>
-
-    </View>
+      <Portal>
+        <Modal visible={modalVisible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
+          <Text>You can practise in this segment</Text>
+          <Text> Long press = ➖ (hyphen)</Text>
+          <Text> Short press = ⚫ (dot)</Text>
+          <Button onPress={hideModal}>Close</Button>
+        </Modal>
+      </Portal>
+    </PaperProvider>
   );
 };
 
@@ -163,6 +183,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     left: 20,
+  },
+  infoButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
   },
   title: {
     fontSize: 24,
@@ -208,6 +233,12 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ff4d4d',
     borderRadius: 5,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
   },
 });
 
