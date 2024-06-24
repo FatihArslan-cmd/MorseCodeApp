@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Navigation hook
+import { StackNavigationProp } from '@react-navigation/stack'; // Assuming you use stack navigation
 import { morseAlphabet } from '../utils/morseAlphabet';
+import Entypo from 'react-native-vector-icons/Entypo';
 
+type RootStackParamList = {
+  Chart: undefined; 
+};
+
+type MorseCodeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Chart'>;
 
 const MorseCodeApp: React.FC = () => {
   const [morseCode, setMorseCode] = useState<string>('');
   const [isPressing, setIsPressing] = useState<boolean>(false);
   const [startTime, setStartTime] = useState<number>(0);
+  const navigation = useNavigation<MorseCodeScreenNavigationProp>(); // Use navigation hook with type
 
   const handlePressIn = () => {
     setIsPressing(true);
@@ -24,8 +33,9 @@ const MorseCodeApp: React.FC = () => {
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!isPressing && morseCode) {
+    let timeout: NodeJS.Timeout | null = null;
+    if (!isPressing && morseCode) {
+      timeout = setTimeout(() => {
         const foundKey = Object.keys(morseAlphabet).find(
           key => morseAlphabet[key] === morseCode
         );
@@ -35,14 +45,21 @@ const MorseCodeApp: React.FC = () => {
           Alert.alert(`Morse Kod: ${morseCode} tanınmadı.`);
         }
         setMorseCode('');
-      }
-    }, 2000); // 2 saniye bekle
+      }, 2000); // 2 saniye bekle
+    }
 
-    return () => clearTimeout(timeout);
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
   }, [morseCode, isPressing]);
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.navigate('Chart')} style={styles.arrowContainer}>
+        <Entypo name="list" size={32} color="black" />
+      </TouchableOpacity>
       <Text style={styles.title}>Morse Kod Girişi</Text>
       <TouchableOpacity
         style={styles.button}
