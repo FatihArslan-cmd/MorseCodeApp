@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { morseAlphabet } from '../utils/morseAlphabet';
 import Entypo from 'react-native-vector-icons/Entypo';
+import * as Animatable from 'react-native-animatable';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type RootStackParamList = {
   Chart: undefined;
@@ -18,6 +20,7 @@ const MorseCodeApp: React.FC = () => {
   const [startTime, setStartTime] = useState<number>(0);
   const navigation = useNavigation<MorseCodeScreenNavigationProp>(); 
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const blinkingDot = useRef(new Animated.Value(0)).current;
 
   const handlePressIn = () => {
     setIsPressing(true);
@@ -56,6 +59,24 @@ const MorseCodeApp: React.FC = () => {
     };
   }, [morseCode, isPressing]);
 
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(blinkingDot, {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(blinkingDot, {
+          toValue: 0,
+          duration: 500,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      ])
+    ).start();
+  }, []);
   const animateLetter = (letter: string) => {
     Animated.timing(animatedValue, {
       toValue: 1,
@@ -80,14 +101,20 @@ const MorseCodeApp: React.FC = () => {
       <TouchableOpacity onPress={() => navigation.navigate('Chart')} style={styles.arrowContainer}>
         <Entypo name="list" size={32} color="black" />
       </TouchableOpacity>
+      <Animatable.View animation="fadeInDownBig" duration={1000}>
+
       <Text style={styles.title}>Morse Kod Girişi</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-      >
-        <Text style={styles.buttonText}>Basılı Tut</Text>
-      </TouchableOpacity>
+      </Animatable.View>
+
+      <Animatable.View animation="bounceIn" duration={1000}>
+        <TouchableOpacity
+          style={styles.button}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+        >
+          <Text style={styles.buttonText}>Basılı Tut</Text>
+        </TouchableOpacity>
+      </Animatable.View>
       <Text style={styles.morseCode}>{morseCode}</Text>
       <View style={styles.lettersContainer}>
         {recognizedLetters.map((letter, index) => (
@@ -95,22 +122,32 @@ const MorseCodeApp: React.FC = () => {
             transform: [{
               translateY: animatedValue.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, -50]
+                outputRange: [0, -10]
               })
             }],
           }]}>
             {letter}
           </Animated.Text>
         ))}
+         <Animated.Text style={[styles.letter, {
+          opacity: blinkingDot
+        }]}>
+          .
+        </Animated.Text>
       </View>
+      <Animatable.View animation="bounceIn" duration={1000}>
+
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>
-          <Text style={styles.buttonText}>Boşluk</Text>
+        <MaterialCommunityIcons name="keyboard-space" size={32} color="white" />
+
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.buttonText}>Sil</Text>
+        <MaterialCommunityIcons name="backspace" size={32} color="white" />
         </TouchableOpacity>
       </View>
+      </Animatable.View>
+
     </View>
   );
 };

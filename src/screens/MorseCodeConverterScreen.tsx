@@ -1,12 +1,59 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View } from 'react-native';
-import { TextInput, Button, Appbar, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
-import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Morse kodları dosyamızı içe aktarın
+import React, { useState, useRef, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, ScrollView } from 'react-native';
+import { TextInput, Button, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
+import { Audio } from 'expo-av';
+import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Import your Morse code conversion functions
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const MorseCodeConverter = () => {
-  const [inputText, setInputText] = useState('');
-  const [convertedText, setConvertedText] = useState('');
-  const [isTextToMorse, setIsTextToMorse] = useState(true);
+const MorseCodeConverter: React.FC = () => {
+  const [inputText, setInputText] = useState<string>('');
+  const [convertedText, setConvertedText] = useState<string>('');
+  const [isTextToMorse, setIsTextToMorse] = useState<boolean>(true);
+  const shortBeep = useRef<Audio.Sound>(new Audio.Sound());
+  const longBeep = useRef<Audio.Sound>(new Audio.Sound());
+
+  // Load sound files
+  const loadSounds = async () => {
+    try {
+      await shortBeep.current.loadAsync(require('../../assets/ShortBeep.mp3'));
+      await longBeep.current.loadAsync(require('../../assets/LongBeep.mp3'));
+    } catch (error) {
+      console.error('Error loading sound', error);
+    }
+  };
+
+  // Unload sound files
+  const unloadSounds = async () => {
+    try {
+      await shortBeep.current.unloadAsync();
+      await longBeep.current.unloadAsync();
+    } catch (error) {
+      console.error('Error unloading sound', error);
+    }
+  };
+
+  // Play beep sounds
+  const playBeep = async (convertedChar: string) => {
+    for (let char of convertedChar) {
+      if (char === '.') {
+        await shortBeep.current.replayAsync();
+      } else if (char === '-') {
+        await longBeep.current.replayAsync();
+      }
+      // Short delay between signals
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+  };
+
+  // Play Morse code with delay between each character
+  const playMorseCode = async () => {
+    for (let char of inputText) {
+      const convertedChar = convertToMorse(char);
+      await playBeep(convertedChar);
+      // Delay between each character
+      await new Promise(resolve => setTimeout(resolve, 800));
+    }
+  };
 
   const handleConvert = () => {
     if (isTextToMorse) {
@@ -22,6 +69,14 @@ const MorseCodeConverter = () => {
     setIsTextToMorse(!isTextToMorse);
     setConvertedText(''); // Reset the converted text
   };
+
+  // Load sounds when the component mounts and unload when it unmounts
+  useEffect(() => {
+    loadSounds();
+    return () => {
+      unloadSounds();
+    };
+  }, []);
 
   return (
     <PaperProvider>
@@ -50,6 +105,12 @@ const MorseCodeConverter = () => {
               <Card.Content>
                 <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
                 <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
+                {isTextToMorse && (
+                  <Button mode="contained" onPress={playMorseCode} style={styles.button}>
+        <FontAwesome5
+ name="play" size={18} color="white" />
+        </Button>
+                )}
               </Card.Content>
             </Card>
           )}
@@ -58,6 +119,7 @@ const MorseCodeConverter = () => {
     </PaperProvider>
   );
 };
+
 
 const styles = StyleSheet.create({
   safeArea: {
