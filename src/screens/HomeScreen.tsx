@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Appbar, Card, Button, Title } from 'react-native-paper';
+import DocumentScreen from './DocumentScreen';
 
 type RootStackParamList = {
   Home: undefined;
@@ -12,16 +13,16 @@ type RootStackParamList = {
 
 const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
-  
+
   return (
     <View style={styles.container}>
       <Appbar.Header>
         <Appbar.Content title="Learn Morse Code" />
+        <DocumentScreen/>
       </Appbar.Header>
       <View style={styles.content}>
         <Card style={styles.card}>
-        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-
+          <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
           <Card.Content>
             <Title>Morse Code Converter</Title>
           </Card.Content>
@@ -32,8 +33,7 @@ const HomeScreen = () => {
           </Card.Actions>
         </Card>
         <Card style={styles.card}>
-        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-
+          <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
           <Card.Content>
             <Title>Morse Code Simulation</Title>
           </Card.Content>
@@ -43,7 +43,7 @@ const HomeScreen = () => {
             </Button>
           </Card.Actions>
         </Card>
-      </View>
+       </View>
     </View>
   );
 };

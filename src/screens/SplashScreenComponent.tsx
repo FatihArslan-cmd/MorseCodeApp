@@ -33,6 +33,7 @@ const SplashScreenComponent = () => {
       onLayout={onLayoutRootView}
     >
       <Text style={styles.text}>Welcome to Morse Code App!</Text>
+      <Text style={styles.text}>.-- . .-.. -.-. --- -- .</Text>
     </View>
   );
 };

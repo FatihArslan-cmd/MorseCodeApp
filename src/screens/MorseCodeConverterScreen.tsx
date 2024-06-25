@@ -68,6 +68,7 @@ const MorseCodeConverter: React.FC = () => {
   const toggleConversionMode = () => {
     setIsTextToMorse(!isTextToMorse);
     setConvertedText(''); // Reset the converted text
+    setInputText('')
   };
 
   // Load sounds when the component mounts and unload when it unmounts

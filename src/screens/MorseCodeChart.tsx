@@ -3,48 +3,7 @@ import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { DataTable, Text, Title } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable';
 import Entypo from 'react-native-vector-icons/Entypo';
-
-const morseCode = [
-  { letter: 'A', code: '.-' },
-  { letter: 'B', code: '-...' },
-  { letter: 'C', code: '-.-.' },
-  { letter: 'D', code: '-..' },
-  { letter: 'E', code: '.' },
-  { letter: 'F', code: '..-.' },
-  { letter: 'G', code: '--.' },
-  { letter: 'H', code: '....' },
-  { letter: 'I', code: '..' },
-  { letter: 'J', code: '.---' },
-  { letter: 'K', code: '-.-' },
-  { letter: 'L', code: '.-..' },
-  { letter: 'M', code: '--' },
-  { letter: 'N', code: '-.' },
-  { letter: 'O', code: '---' },
-  { letter: 'P', code: '.--.' },
-  { letter: 'Q', code: '--.-' },
-  { letter: 'R', code: '.-.' },
-  { letter: 'S', code: '...' },
-  { letter: 'T', code: '-' },
-  { letter: 'U', code: '..-' },
-  { letter: 'V', code: '...-' },
-  { letter: 'W', code: '.--' },
-  { letter: 'X', code: '-..-' },
-  { letter: 'Y', code: '-.--' },
-  { letter: 'Z', code: '--..' },
-  { letter: '1', code: '.----' },
-  { letter: '2', code: '..---' },
-  { letter: '3', code: '...--' },
-  { letter: '4', code: '....-' },
-  { letter: '5', code: '.....' },
-  { letter: '6', code: '-....' },
-  { letter: '7', code: '--...' },
-  { letter: '8', code: '---..' },
-  { letter: '9', code: '----.' },
-  { letter: '0', code: '-----' },
-  { letter: '.', code: '.-.-.-' },
-  { letter: ',', code: '--..--' },
-  { letter: '?', code: '..--..' }
-];
+import { morseAlphabet } from '../utils/morseAlphabet'; // Importing the Morse alphabet
 
 const MorseCodeChart = () => {
   const scrollViewRef = useRef(null);
@@ -54,6 +13,8 @@ const MorseCodeChart = () => {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
   };
+
+  const morseEntries = Object.entries(morseAlphabet);
 
   return (
     <View style={styles.container}>
@@ -70,10 +31,10 @@ const MorseCodeChart = () => {
               <DataTable.Title><Text style={styles.headerText}>Morse Code</Text></DataTable.Title>
             </DataTable.Header>
 
-            {morseCode.map((item) => (
-              <DataTable.Row key={item.letter}>
-                <DataTable.Cell><Text style={styles.cellText}>{item.letter}</Text></DataTable.Cell>
-                <DataTable.Cell><Text style={styles.cellText}>{item.code}</Text></DataTable.Cell>
+            {morseEntries.map(([letter, code]) => (
+              <DataTable.Row key={letter}>
+                <DataTable.Cell><Text style={styles.cellText}>{letter}</Text></DataTable.Cell>
+                <DataTable.Cell><Text style={styles.cellText}>{code}</Text></DataTable.Cell>
               </DataTable.Row>
             ))}
           </DataTable>
