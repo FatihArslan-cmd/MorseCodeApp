@@ -30,7 +30,7 @@ const DocumentScreen = () => {
         </View>
       </Modal>
 
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity  onPress={() => setModalVisible(true)}>
         <Ionicons name="document-text-outline" size={32} color="black" />
       </TouchableOpacity>
     </View>
@@ -40,8 +40,7 @@ const DocumentScreen = () => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent:'center',
   },
   modalView: {
     margin: 20,

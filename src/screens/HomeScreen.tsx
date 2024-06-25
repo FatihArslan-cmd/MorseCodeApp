@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Appbar, Card, Button, Title } from 'react-native-paper';
 import DocumentScreen from './DocumentScreen';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type RootStackParamList = {
   Home: undefined;
@@ -19,6 +20,9 @@ const HomeScreen = () => {
       <Appbar.Header>
         <Appbar.Content title="Learn Morse Code" />
         <DocumentScreen/>
+        <TouchableOpacity>
+        <MaterialIcons name="settings" size={32} color="black" />
+        </TouchableOpacity>
       </Appbar.Header>
       <View style={styles.content}>
         <Card style={styles.card}>

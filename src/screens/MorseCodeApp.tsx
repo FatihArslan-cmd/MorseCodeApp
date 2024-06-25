@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { morseAlphabet } from '../utils/morseAlphabet';
@@ -7,7 +7,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import { Modal, Portal, Button, PaperProvider } from 'react-native-paper';
+import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
 
 type RootStackParamList = {
   Chart: undefined;
@@ -20,10 +20,9 @@ const MorseCodeApp: React.FC = () => {
   const [recognizedLetters, setRecognizedLetters] = useState<string[]>([]);
   const [isPressing, setIsPressing] = useState<boolean>(false);
   const [startTime, setStartTime] = useState<number>(0);
-  const [modalVisible, setModalVisible] = useState<boolean>(false); // Modal state
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
   const navigation = useNavigation<MorseCodeScreenNavigationProp>(); 
-  const animatedValue = useRef(new Animated.Value(0)).current;
-  const blinkingDot = useRef(new Animated.Value(0)).current;
 
   const handlePressIn = () => {
     setIsPressing(true);
@@ -48,7 +47,6 @@ const MorseCodeApp: React.FC = () => {
           key => morseAlphabet[key] === morseCode
         );
         if (foundKey) {
-          animateLetter(foundKey);
           setRecognizedLetters(prev => [...prev, foundKey]);
         }
         setMorseCode('');
@@ -62,42 +60,14 @@ const MorseCodeApp: React.FC = () => {
     };
   }, [morseCode, isPressing]);
 
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(blinkingDot, {
-          toValue: 1,
-          duration: 500,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(blinkingDot, {
-          toValue: 0,
-          duration: 500,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        })
-      ])
-    ).start();
-  }, []);
-
-  const animateLetter = (letter: string) => {
-    Animated.timing(animatedValue, {
-      toValue: 1,
-      duration: 1000,
-      easing: Easing.bounce,
-      useNativeDriver: true,
-    }).start(() => {
-      animatedValue.setValue(0);
-    });
-  };
-
   const handleSpace = () => {
     setRecognizedLetters(prev => [...prev, ' ']);
   };
 
   const handleDelete = () => {
-    setRecognizedLetters(prev => prev.slice(0, -1));
+    if (recognizedLetters.length > 0) {
+      setDeletingIndex(recognizedLetters.length - 1);
+    }
   };
 
   const handleInfoPress = () => {
@@ -106,6 +76,11 @@ const MorseCodeApp: React.FC = () => {
 
   const hideModal = () => {
     setModalVisible(false);
+  };
+
+  const handleAnimationEnd = () => {
+    setRecognizedLetters(prev => prev.slice(0, -1));
+    setDeletingIndex(null);
   };
 
   return (
@@ -118,7 +93,7 @@ const MorseCodeApp: React.FC = () => {
           <Feather name="info" size={32} color="black" />
         </TouchableOpacity>
         <Animatable.View animation="fadeInDownBig" duration={1000}>
-          <Text style={styles.title}>Morse Kod Girişi</Text>
+          <Text style={styles.title}>Morse Kod Girişi </Text>
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <TouchableOpacity
@@ -126,29 +101,30 @@ const MorseCodeApp: React.FC = () => {
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
           >
-            <Text style={styles.buttonText}>Basılı Tut</Text>
+            <Text style={styles.buttonText}>Basılı Tut </Text>
           </TouchableOpacity>
         </Animatable.View>
-        <Text style={styles.morseCode}>{morseCode}</Text>
-        <View style={styles.lettersContainer}>
-          {recognizedLetters.map((letter, index) => (
-            <Animated.Text key={index} style={[styles.letter, {
-              transform: [{
-                translateY: animatedValue.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, -10]
-                })
-              }],
-            }]}>
-              {letter}
-            </Animated.Text>
-          ))}
-          <Animated.Text style={[styles.letter, {
-            opacity: blinkingDot
-          }]}>
-            .
-          </Animated.Text>
-        </View>
+        <Text style={styles.morseCode}>{morseCode} </Text>
+        <Animatable.View animation="zoomIn" duration={1000}>
+          <View style={styles.lettersContainer}>
+            {recognizedLetters.map((letter, index) => (
+              deletingIndex === index ? (
+                <Animatable.View
+                  animation="fadeOutDownBig"
+                  duration={400}
+                  key={index}
+                  onAnimationEnd={handleAnimationEnd}
+                >
+                  <Text style={styles.letter}>{letter} </Text>
+                </Animatable.View>
+              ) : (
+                <Animatable.View animation="fadeInDownBig" duration={1000} key={index}>
+                  <Text style={styles.letter}>{letter} </Text>
+                </Animatable.View>
+              )
+            ))}
+          </View>
+        </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>

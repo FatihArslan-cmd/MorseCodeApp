@@ -4,6 +4,7 @@ import { TextInput, Button, Card, Title, Paragraph, Provider as PaperProvider } 
 import { Audio } from 'expo-av';
 import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Import your Morse code conversion functions
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import * as Animatable from 'react-native-animatable';
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -82,46 +83,49 @@ const MorseCodeConverter: React.FC = () => {
   return (
     <PaperProvider>
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Card style={styles.card}>
-            <Card.Content>
-              <Title>{isTextToMorse ? 'Enter Text' : 'Enter Morse Code'}</Title>
-              <TextInput
-                label={isTextToMorse ? 'Text' : 'Morse Code'}
-                mode="outlined"
-                value={inputText}
-                onChangeText={text => setInputText(text)}
-                style={styles.input}
-              />
-              <Button mode="contained" onPress={handleConvert} style={styles.button}>
-                {isTextToMorse ? 'Convert to Morse Code' : 'Convert to Text'}
-              </Button>
-              <Button mode="text" onPress={toggleConversionMode} style={styles.toggleButton}>
-                {isTextToMorse ? 'Switch to Morse to Text' : 'Switch to Text to Morse'}
-              </Button>
-            </Card.Content>
-          </Card>
-          {convertedText !== '' && (
+        <Animatable.View animation="fadeInDownBig" duration={1000}>
+          <ScrollView contentContainerStyle={styles.container}>
             <Card style={styles.card}>
               <Card.Content>
-                <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
-                <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
-                {isTextToMorse && (
-                  <Button mode="contained" onPress={playMorseCode} style={styles.button}>
-        <FontAwesome5
- name="play" size={18} color="white" />
-        </Button>
-                )}
+                <Title>{isTextToMorse ? 'Enter Text' : 'Enter Morse Code'}</Title>
+                <TextInput
+                  label={isTextToMorse ? 'Text' : 'Morse Code'}
+                  mode="outlined"
+                  value={inputText}
+                  onChangeText={text => setInputText(text)}
+                  style={styles.input}
+                 keyboardType={isTextToMorse ? 'default' : 'visible-password'}
+                    />
+                <Button mode="contained" onPress={handleConvert} style={styles.button}>
+                  {isTextToMorse ? 'Convert to Morse Code' : 'Convert to Text'}
+                </Button>
+                <Button mode="text" onPress={toggleConversionMode} style={styles.toggleButton}>
+                  {isTextToMorse ? 'Switch to Morse to Text' : 'Switch to Text to Morse'}
+                </Button>
               </Card.Content>
             </Card>
-          )}
-        </ScrollView>
+
+            {convertedText !== '' && (
+              <Animatable.View animation="fadeInUpBig" duration={1000}>
+                <Card style={styles.card}>
+                  <Card.Content>
+                    <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
+                    <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
+                    {isTextToMorse && (
+                      <Button mode="contained" onPress={playMorseCode} style={styles.button}>
+                        <FontAwesome5 name="play" size={18} color="white" />
+                      </Button>
+                    )}
+                  </Card.Content>
+                </Card>
+              </Animatable.View>
+            )}
+          </ScrollView>
+        </Animatable.View>
       </SafeAreaView>
     </PaperProvider>
   );
 };
-
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
