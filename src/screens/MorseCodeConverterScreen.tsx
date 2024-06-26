@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, Vibration } from 'react-native';
 import { TextInput, Button, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Import your Morse code conversion functions
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Animatable from 'react-native-animatable';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -45,8 +46,8 @@ const MorseCodeConverter: React.FC = () => {
         setCurrentBeepChar('➖');
         await longBeep.current.replayAsync();
       }
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setCurrentBeepChar(''); 
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setCurrentBeepChar('');
     }
   };
 
@@ -57,9 +58,24 @@ const MorseCodeConverter: React.FC = () => {
       const convertedChar = convertToMorse(char);
       await playBeep(convertedChar);
       // Delay between each character
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 600));
     }
     setIsPlaying(false);
+  };
+
+  // Vibrate for Morse code
+  const vibrateMorseCode = async () => {
+    for (let char of inputText) {
+      const convertedChar = convertToMorse(char);
+      for (let c of convertedChar) {
+        if (c === '.') {
+          Vibration.vibrate(180); // Short vibration
+        } else if (c === '-') {
+          Vibration.vibrate(400); // Long vibration
+        }
+        await new Promise(resolve => setTimeout(resolve, 400)); // Ensure vibration pattern matches beep delay
+      }
+    }
   };
 
   const handleConvert = () => {
@@ -114,18 +130,27 @@ const MorseCodeConverter: React.FC = () => {
             {convertedText !== '' && (
               <Animatable.View animation="fadeInUpBig" duration={1000}>
                 <Card style={styles.card}>
+                  <Button
+                    mode="text"
+                    onPress={vibrateMorseCode}
+                    style={styles.vibrationButton}
+                  >
+               <MaterialCommunityIcons name="vibrate" size={24} color="black" />
+                  </Button>
                   <Card.Content>
                     <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
                     <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
                     {isTextToMorse && (
-                      <Button
-                        mode="contained"
-                        onPress={playMorseCode}
-                        style={styles.button}
-                        disabled={isPlaying} // Disable button while playing
-                      >
-                        <FontAwesome5 name="play" size={18} color="white" />
-                      </Button>
+                      <>
+                        <Button
+                          mode="contained"
+                          onPress={playMorseCode}
+                          style={styles.button}
+                          disabled={isPlaying} // Disable button while playing
+                        >
+                          <FontAwesome5 name="play" size={18} color="white" />
+                        </Button>
+                      </>
                     )}
                   </Card.Content>
                 </Card>
@@ -152,6 +177,8 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 20,
+    position: 'relative', // Added for absolute positioning of the vibration button
+    paddingVertical:10
   },
   input: {
     marginBottom: 10,
@@ -161,6 +188,11 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     marginTop: 10,
+  },
+  vibrationButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
   convertedText: {
     fontSize: 18,

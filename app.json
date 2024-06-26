@@ -17,8 +17,10 @@
     },
     "android": {
       "permissions": [
-        "READ_EXTERNAL_STORAGE"
+        "CAMERA",
+        "FLASHLIGHT"
       ],
+      "package": "com.yourcompany.flashlightapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
