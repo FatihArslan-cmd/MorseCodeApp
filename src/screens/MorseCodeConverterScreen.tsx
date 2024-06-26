@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text } from 'react-native';
 import { TextInput, Button, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Import your Morse code conversion functions
@@ -10,6 +10,8 @@ const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
   const [convertedText, setConvertedText] = useState<string>('');
   const [isTextToMorse, setIsTextToMorse] = useState<boolean>(true);
+  const [currentBeepChar, setCurrentBeepChar] = useState<string>('');
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const shortBeep = useRef<Audio.Sound>(new Audio.Sound());
   const longBeep = useRef<Audio.Sound>(new Audio.Sound());
 
@@ -37,23 +39,27 @@ const MorseCodeConverter: React.FC = () => {
   const playBeep = async (convertedChar: string) => {
     for (let char of convertedChar) {
       if (char === '.') {
+        setCurrentBeepChar('⚫');
         await shortBeep.current.replayAsync();
       } else if (char === '-') {
+        setCurrentBeepChar('➖');
         await longBeep.current.replayAsync();
       }
-      // Short delay between signals
       await new Promise(resolve => setTimeout(resolve, 300));
+      setCurrentBeepChar(''); 
     }
   };
 
   // Play Morse code with delay between each character
   const playMorseCode = async () => {
+    setIsPlaying(true);
     for (let char of inputText) {
       const convertedChar = convertToMorse(char);
       await playBeep(convertedChar);
       // Delay between each character
       await new Promise(resolve => setTimeout(resolve, 800));
     }
+    setIsPlaying(false);
   };
 
   const handleConvert = () => {
@@ -94,8 +100,8 @@ const MorseCodeConverter: React.FC = () => {
                   value={inputText}
                   onChangeText={text => setInputText(text)}
                   style={styles.input}
-                 keyboardType={isTextToMorse ? 'default' : 'visible-password'}
-                    />
+                  keyboardType={isTextToMorse ? 'default' : 'visible-password'}
+                />
                 <Button mode="contained" onPress={handleConvert} style={styles.button}>
                   {isTextToMorse ? 'Convert to Morse Code' : 'Convert to Text'}
                 </Button>
@@ -112,7 +118,12 @@ const MorseCodeConverter: React.FC = () => {
                     <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
                     <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
                     {isTextToMorse && (
-                      <Button mode="contained" onPress={playMorseCode} style={styles.button}>
+                      <Button
+                        mode="contained"
+                        onPress={playMorseCode}
+                        style={styles.button}
+                        disabled={isPlaying} // Disable button while playing
+                      >
                         <FontAwesome5 name="play" size={18} color="white" />
                       </Button>
                     )}
@@ -121,11 +132,17 @@ const MorseCodeConverter: React.FC = () => {
               </Animatable.View>
             )}
           </ScrollView>
+          {currentBeepChar !== '' && (
+            <Animatable.View animation="fadeInUp" duration={500} style={styles.beepContainer}>
+              <Text style={styles.beepText}>{currentBeepChar}</Text>
+            </Animatable.View>
+          )}
         </Animatable.View>
       </SafeAreaView>
     </PaperProvider>
   );
 };
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -148,7 +165,17 @@ const styles = StyleSheet.create({
   convertedText: {
     fontSize: 18,
     letterSpacing: 1.5,
-    fontWeight:'bold'
+    fontWeight: 'bold'
+  },
+  beepContainer: {
+    position: 'absolute',
+    bottom: 50,
+    alignSelf: 'center',
+  },
+  beepText: {
+    fontSize: 50,
+    fontWeight: 'bold',
+    color: 'red',
   },
 });
 

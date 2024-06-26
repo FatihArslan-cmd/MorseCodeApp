@@ -10,6 +10,7 @@ type RootStackParamList = {
   Home: undefined;
   MorseCodeConverter: undefined;
   MorseCodeApp: undefined;
+  Settings: undefined
 };
 
 const HomeScreen = () => {
@@ -18,9 +19,9 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Appbar.Header>
-        <Appbar.Content title="Learn Morse Code" />
+        <Appbar.Content title="Learn Morse Code " />
         <DocumentScreen/>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
         <MaterialIcons name="settings" size={32} color="black" />
         </TouchableOpacity>
       </Appbar.Header>

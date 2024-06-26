@@ -69,7 +69,9 @@ const MorseCodeApp: React.FC = () => {
       setDeletingIndex(recognizedLetters.length - 1);
     }
   };
-
+  const handleDeleteAll = () => {
+      setRecognizedLetters([]);
+  };
   const handleInfoPress = () => {
     setModalVisible(true);
   };
@@ -104,7 +106,10 @@ const MorseCodeApp: React.FC = () => {
             <Text style={styles.buttonText}>Basılı Tut </Text>
           </TouchableOpacity>
         </Animatable.View>
+        <Animatable.View key={morseCode} animation="jello" duration={1000}>
         <Text style={styles.morseCode}>{morseCode} </Text>
+        </Animatable.View>
+
         <Animatable.View animation="zoomIn" duration={1000}>
           <View style={styles.lettersContainer}>
             {recognizedLetters.map((letter, index) => (
@@ -115,7 +120,7 @@ const MorseCodeApp: React.FC = () => {
                   key={index}
                   onAnimationEnd={handleAnimationEnd}
                 >
-                  <Text style={styles.letter}>{letter} </Text>
+                  <Text style={styles.letter}>{letter}</Text>
                 </Animatable.View>
               ) : (
                 <Animatable.View animation="fadeInDownBig" duration={1000} key={index}>
@@ -127,6 +132,9 @@ const MorseCodeApp: React.FC = () => {
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAll}>
+              <Entypo name="squared-cross" size={32} color="white" />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>
               <MaterialCommunityIcons name="keyboard-space" size={32} color="white" />
             </TouchableOpacity>
@@ -209,6 +217,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ff4d4d',
     borderRadius: 5,
+    marginRight: 10,
   },
   modalContainer: {
     backgroundColor: 'white',
