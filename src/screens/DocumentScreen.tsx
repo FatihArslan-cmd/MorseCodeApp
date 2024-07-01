@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import PagerView from 'react-native-pager-view';
+import * as Animatable from 'react-native-animatable';
 import CustomText from '../components/CustomText';
+import PageIndicator from './PageIndicator';
 
 const DocumentScreen = ({ visible, onClose }) => {
+  const [currentPage, setCurrentPage] = useState(0);
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -14,8 +18,17 @@ const DocumentScreen = ({ visible, onClose }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <PagerView style={styles.pagerView} initialPage={0}>
-              <View key="1" style={styles.page}>
+            <PagerView
+              style={styles.pagerView}
+              initialPage={0}
+              onPageSelected={e => setCurrentPage(e.nativeEvent.position)}
+            >
+              <Animatable.View
+                key="1"
+                style={styles.page}
+                animation="slideInRight"
+                duration={1000}
+              >
                 <Image
                   style={styles.image}
                   source={{ uri: 'https://picsum.photos/700' }}
@@ -24,7 +37,7 @@ const DocumentScreen = ({ visible, onClose }) => {
                 <CustomText style={styles.text}>
                   Morse code is a method used in telecommunication to encode text characters as standardized sequences of two different signal durations, called dots and dashes.
                 </CustomText>
-              </View>
+              </Animatable.View>
               <View key="2" style={styles.page}>
                 <Image
                   style={styles.image}
@@ -58,6 +71,7 @@ const DocumentScreen = ({ visible, onClose }) => {
                 </TouchableOpacity>
               </View>
             </PagerView>
+            <PageIndicator total={4} currentIndex={currentPage} />
           </View>
         </View>
       </Modal>
