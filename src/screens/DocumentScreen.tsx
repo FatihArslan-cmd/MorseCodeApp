@@ -5,10 +5,12 @@ import * as Animatable from 'react-native-animatable';
 import CustomText from '../components/CustomText';
 import PageIndicator from './PageIndicator';
 import { ThemeContext } from '../context/ThemeContext'; // Adjust path as per your project structure
+import { useTranslation } from 'react-i18next';
 
 const DocumentScreen = ({ visible, onClose }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const { isDarkMode } = useContext(ThemeContext);
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.centeredView, isDarkMode ? styles.darkBackground : styles.lightBackground]}>
@@ -35,29 +37,28 @@ const DocumentScreen = ({ visible, onClose }) => {
                   style={styles.image}
                   source={{ uri: 'https://picsum.photos/700' }}
                 />
-                <Text style={[styles.heading, isDarkMode ? styles.darkText : styles.lightText]}>Introduction to Morse Code</Text>
+                <Text style={[styles.heading, isDarkMode ? styles.darkText : styles.lightText]}>{t('Introduction to Morse Code')}  </Text>
                 <CustomText style={[styles.text, isDarkMode ? styles.darkText : styles.lightText]}>
-                  Morse code is a method used in telecommunication to encode text characters as standardized sequences of two different signal durations, called dots and dashes.
-                </CustomText>
+                {t('Morse code is a method used in telecommunication to encode text characters as standardized sequences of two different signal durations, called dots and dashes.')}</CustomText>
               </Animatable.View>
               <View key="2" style={styles.page}>
                 <Image
                   style={styles.image}
                   source={{ uri: 'https://cdn.yeniakit.com.tr/images/news/625/samuel-morse-8e543a.jpeg' }}
                 />
-                <Text style={[styles.heading, isDarkMode ? styles.darkText : styles.lightText]}>History of Morse Code</Text>
+                <Text style={[styles.heading, isDarkMode ? styles.darkText : styles.lightText]}>{t('History of Morse Code')}</Text>
                 <CustomText style={[styles.text, isDarkMode ? styles.darkText : styles.lightText]}>
-                  Invented in the early 1830s by Samuel Morse and Alfred Vail, Morse code was the primary method of electronic communication before the advent of modern telecommunication technologies.
-                </CustomText>
+{                  t('Invented in the early 1830s by Samuel Morse and Alfred Vail, Morse code was the primary method of electronic communication before the advent of modern telecommunication technologies.')
+}                </CustomText>
               </View>
               <View key="3" style={styles.page}>
                 <Image
                   style={styles.image}
                   source={{ uri: 'https://images.unsplash.com/photo-1557264303-891df35169e7' }}
                 />
-                <Text style={[styles.heading, isDarkMode ? styles.darkText : styles.lightText]}>Learning Morse Code</Text>
+                <Text style={[styles.heading, isDarkMode ? styles.darkText : styles.lightText]}>{t('Learning Morse Code')}</Text>
                 <CustomText style={[styles.text, isDarkMode ? styles.darkText : styles.lightText]}>
-                  Each letter and number in Morse code is represented by a unique combination of dots and dashes. For instance, 'S' is '...' and 'O' is '---'.
+                  {t('Each letter and number in Morse code is represented by a unique combination of dots and dashes. For instance, S is ... and O is ---.')}
                 </CustomText>
               </View>
               <View key="4" style={styles.page}>
@@ -66,10 +67,10 @@ const DocumentScreen = ({ visible, onClose }) => {
                   source={{ uri: 'https://images.unsplash.com/photo-1524533541976-217d90eab073' }}
                 />
                 <CustomText style={[styles.text, isDarkMode ? styles.darkText : styles.lightText]}>
-                  This app offers an interactive Morse code learning experience.
+                  {t('This app offers an interactive Morse code learning experience.')}
                 </CustomText>
                 <TouchableOpacity onPress={onClose} style={[styles.closeButton, isDarkMode ? styles.darkButton : styles.lightButton]}>
-                  <CustomText style={styles.closeButtonText}>Continue App...</CustomText>
+                  <CustomText style={styles.closeButtonText}>{t('Continue App...')}</CustomText>
                 </TouchableOpacity>
               </View>
             </PagerView>

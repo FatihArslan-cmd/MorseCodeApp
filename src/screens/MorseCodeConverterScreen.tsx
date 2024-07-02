@@ -7,6 +7,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -16,6 +17,7 @@ const MorseCodeConverter: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const shortBeep = useRef<Audio.Sound>(new Audio.Sound());
   const longBeep = useRef<Audio.Sound>(new Audio.Sound());
+  const { t, i18n } = useTranslation(); // useTranslation hook
 
   const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
 
@@ -113,10 +115,10 @@ const MorseCodeConverter: React.FC = () => {
             <Card style={[styles.card, isDarkMode ? styles.cardDark : styles.cardLight]}>
               <Card.Content>
                 <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>
-                  {isTextToMorse ? 'Enter Text' : 'Enter Morse Code'}
+                  {isTextToMorse ? t('Enter Text') : t('Enter Morse Code')}
                 </Title>
                 <TextInput
-                  label={isTextToMorse ? 'Text' : 'Morse Code'}
+                  label={isTextToMorse ? t('Text') : t('Morse Code')}
                   mode="outlined"
                   value={inputText}
                   onChangeText={text => setInputText(text)}
@@ -125,10 +127,10 @@ const MorseCodeConverter: React.FC = () => {
                   theme={{ colors: { text: isDarkMode ? '#ffffff' : '#000000', primary: isDarkMode ? '#bb86fc' : '#6200ee' } }}
                 />
                 <Button mode="contained" onPress={handleConvert} style={styles.button}>
-                  {isTextToMorse ? 'Convert to Morse Code' : 'Convert to Text'}
+                  {isTextToMorse ? t('Convert to Morse Code') : t('Convert to Text')}
                 </Button>
                 <Button mode="text" onPress={toggleConversionMode} style={styles.toggleButton}>
-                  {isTextToMorse ? 'Switch to Morse to Text' : 'Switch to Text to Morse'}
+                  {isTextToMorse ? t('Switch to Morse to Text') : t('Switch to text to Morse')}
                 </Button>
               </Card.Content>
             </Card>
@@ -141,7 +143,7 @@ const MorseCodeConverter: React.FC = () => {
                   </Button>
                   <Card.Content>
                     <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>
-                      {isTextToMorse ? 'Morse Code' : 'Text'}
+                      {isTextToMorse ? t('Morse Code') : t('Text')}
                     </Title>
                     <Paragraph style={[styles.convertedText, isDarkMode ? styles.darkConvertedText : styles.lightConvertedText]}>
                       {convertedText}

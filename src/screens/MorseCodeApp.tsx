@@ -9,6 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
+import { useTranslation } from 'react-i18next';
 
 type RootStackParamList = {
   Chart: undefined;
@@ -24,6 +25,7 @@ const MorseCodeApp: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
   const navigation = useNavigation<MorseCodeScreenNavigationProp>();
+  const { t } = useTranslation();
 
   const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
 
@@ -35,9 +37,9 @@ const MorseCodeApp: React.FC = () => {
   const handlePressOut = () => {
     const pressDuration = Date.now() - startTime;
     if (pressDuration < 300) {
-      setMorseCode(prev => prev + '.');
+      setMorseCode( prev => prev + '.' );
     } else {
-      setMorseCode(prev => prev + '-');
+      setMorseCode( prev => prev + '-' );
     }
     setIsPressing(false);
   };
@@ -50,7 +52,7 @@ const MorseCodeApp: React.FC = () => {
           key => morseAlphabet[key] === morseCode
         );
         if (foundKey) {
-          setRecognizedLetters(prev => [...prev, foundKey]);
+          setRecognizedLetters(prev => [...prev, foundKey ]);
         }
         setMorseCode('');
       }, 2000);
@@ -100,7 +102,7 @@ const MorseCodeApp: React.FC = () => {
           <Feather name="info" size={32} color={isDarkMode ? 'white' : 'black'} />
         </TouchableOpacity>
         <Animatable.View animation="fadeInDownBig" duration={1000}>
-          <Text style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>Morse Kod Girişi</Text>
+          <Text style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>{t('Enter Morse Code')} </Text>
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <TouchableOpacity
@@ -108,11 +110,11 @@ const MorseCodeApp: React.FC = () => {
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
           >
-            <Text style={[styles.buttonText, isDarkMode ? styles.darkButtonText : styles.lightButtonText]}>Basılı Tut</Text>
+            <Text style={[styles.buttonText, isDarkMode ? styles.darkButtonText : styles.lightButtonText]}>{t('Hold Down')} </Text>
           </TouchableOpacity>
         </Animatable.View>
         <Animatable.View key={morseCode} animation="jello" duration={1000}>
-          <Text style={[styles.morseCode, isDarkMode ? styles.darkText : styles.lightText]}>{morseCode}</Text>
+          <Text style={[styles.morseCode, isDarkMode ? styles.darkText : styles.lightText]}>{morseCode} </Text>
         </Animatable.View>
 
         <Animatable.View animation="zoomIn" duration={1000}>
@@ -125,11 +127,11 @@ const MorseCodeApp: React.FC = () => {
                   key={index}
                   onAnimationEnd={handleAnimationEnd}
                 >
-                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter}</Text>
+                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter} </Text>
                 </Animatable.View>
               ) : (
                 <Animatable.View animation="fadeInDownBig" duration={1000} key={index}>
-                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter}</Text>
+                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter} </Text>
                 </Animatable.View>
               )
             ))}
@@ -151,9 +153,9 @@ const MorseCodeApp: React.FC = () => {
       </View>
       <Portal>
         <Modal visible={modalVisible} onDismiss={hideModal} contentContainerStyle={[styles.modalContainer, isDarkMode ? styles.darkModal : styles.lightModal]}>
-          <Text style={isDarkMode ? styles.darkText : styles.lightText}>You can practise in this segment</Text>
-          <Text style={isDarkMode ? styles.darkText : styles.lightText}> Long press = ➖ (hyphen)</Text>
-          <Text style={isDarkMode ? styles.darkText : styles.lightText}> Short press = ⚫ (dot)</Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}>{t('You can practise in this segment')}</Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}> {t('Long press')} = ➖ ({t('hyphen')})</Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}> {t('Short press')} = ⚫ ({t('dot')})</Text>
           <Button onPress={hideModal}>Close</Button>
         </Modal>
       </Portal>

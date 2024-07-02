@@ -9,6 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import legacyFunction from './Legacy';
 import { ThemeContext } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type RootStackParamList = {
   Home: undefined;
@@ -21,6 +22,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const { isDarkMode } = useContext(ThemeContext);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkFirstLaunch = async () => {
@@ -53,22 +55,22 @@ const HomeScreen = () => {
         <Card style={styles.card}>
           <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
           <Card.Content style={[ isDarkMode ? styles.cardDarkContainer : styles.lightContainer]}>
-          <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>Morse Code Converter</Title>
+          <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>{t('Morse Code Converter')}</Title>
           </Card.Content>
           <Card.Actions style={[ isDarkMode ? styles.cardDarkContainer : styles.lightContainer]}>
             <Button mode="contained" onPress={() => navigation.navigate('MorseCodeConverter')}>
-              Go to Converter
+              {t('Go to Converter')}
             </Button>
           </Card.Actions>
         </Card>
         <Card style={styles.card}>
           <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
           <Card.Content style={[ isDarkMode ? styles.cardDarkContainer : styles.lightContainer]}>
-            <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>Morse Code Simulation</Title>
+            <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>{t('Morse Code Simulation')}</Title>
           </Card.Content>
           <Card.Actions style={[ isDarkMode ? styles.cardDarkContainer : styles.lightContainer]}>
             <Button mode="contained" onPress={() => navigation.navigate('MorseCodeApp')}>
-              Go to Simulation
+              {t('Go to Simulation')}
             </Button>
           </Card.Actions>
         </Card>

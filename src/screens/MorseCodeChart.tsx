@@ -7,11 +7,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Audio } from 'expo-av';
 import { morseAlphabet } from '../utils/morseAlphabet'; // Importing the Morse alphabet
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
+import { useTranslation } from 'react-i18next';
 
 const MorseCodeChart = () => {
   const [shortBeep, setShortBeep] = useState(new Audio.Sound());
   const [longBeep, setLongBeep] = useState(new Audio.Sound());
   const scrollViewRef = useRef(null);
+  const { t } = useTranslation();
 
   const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
 
@@ -67,11 +69,11 @@ const MorseCodeChart = () => {
 
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
         <Animatable.View animation="fadeInUpBig" duration={1000} delay={250}>
-          <Title style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>International Morse Code</Title>
+          <Title style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>{t('International Morse Code')}</Title>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>Letter</Text></DataTable.Title>
-              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>Morse Code</Text></DataTable.Title>
+              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Letter')}</Text></DataTable.Title>
+              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Morse Code')}</Text></DataTable.Title>
             </DataTable.Header>
 
             {morseEntries.map(([letter, code]) => (

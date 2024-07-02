@@ -1,6 +1,8 @@
 {
   "expo": {
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "name": "LearnMorseCodeApp",
     "slug": "LearnMorseCodeApp",
     "version": "1.0.0",
@@ -28,6 +30,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }
