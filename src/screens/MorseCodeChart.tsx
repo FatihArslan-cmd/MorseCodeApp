@@ -1,17 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { DataTable, Text, Title } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
 import { Audio } from 'expo-av';
 import { morseAlphabet } from '../utils/morseAlphabet'; // Importing the Morse alphabet
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 
 const MorseCodeChart = () => {
   const [shortBeep, setShortBeep] = useState(new Audio.Sound());
   const [longBeep, setLongBeep] = useState(new Audio.Sound());
   const scrollViewRef = useRef(null);
+
+  const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
 
   const loadSounds = async () => {
     try {
@@ -58,27 +60,29 @@ const MorseCodeChart = () => {
   const morseEntries = Object.entries(morseAlphabet);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
       <TouchableOpacity onPress={handleScrollToEnd} style={styles.arrowContainer}>
-        <Entypo name="arrow-down" size={32} color="red" />
+        <Entypo name="arrow-down" size={32} color={isDarkMode ? 'white' : 'red'} />
       </TouchableOpacity>
 
       <ScrollView ref={scrollViewRef} style={styles.scrollView}>
         <Animatable.View animation="fadeInUpBig" duration={1000} delay={250}>
-          <Title style={styles.title}>International Morse Code</Title>
+          <Title style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>International Morse Code</Title>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title><Text style={styles.headerText}>Letter</Text></DataTable.Title>
-              <DataTable.Title><Text style={styles.headerText}>Morse Code</Text></DataTable.Title>
+              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>Letter</Text></DataTable.Title>
+              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>Morse Code</Text></DataTable.Title>
             </DataTable.Header>
 
             {morseEntries.map(([letter, code]) => (
               <DataTable.Row key={letter}>
-                <DataTable.Cell> <TouchableOpacity style={{flexDirection:'row',}} onPress={() => playBeep(code)}>
+                <DataTable.Cell>
+                  <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => playBeep(code)}>
                     <AntDesign name="sound" size={24} color="gray" />
-                 <Text style={styles.cellText}>{letter}</Text>
-                 </TouchableOpacity></DataTable.Cell>
-                <DataTable.Cell><Text style={styles.cellText}>{code}</Text></DataTable.Cell>
+                    <Text style={[styles.cellText, isDarkMode ? styles.darkText : styles.lightText]}>{letter}</Text>
+                  </TouchableOpacity>
+                </DataTable.Cell>
+                <DataTable.Cell><Text style={[styles.cellText, isDarkMode ? styles.darkText : styles.lightText]}>{code}</Text></DataTable.Cell>
               </DataTable.Row>
             ))}
           </DataTable>
@@ -93,6 +97,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  darkContainer: {
+    backgroundColor: '#121212',
+  },
+  lightContainer: {
+    backgroundColor: '#ffffff',
+  },
   arrowContainer: {
     alignItems: 'center',
     marginVertical: 10,
@@ -103,16 +113,22 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     marginBottom: 20,
-    fontSize: 24, // Example of larger font size
-    fontWeight: 'bold', // Example of bold font weight
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   headerText: {
-    fontSize: 18, // Adjust header text size as needed
-    fontWeight: 'bold', // Bold for header text
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   cellText: {
-    fontSize: 16, // Adjust cell text size as needed
-    fontWeight: 'bold', // Bold for cell text
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  darkText: {
+    color: '#ffffff',
+  },
+  lightText: {
+    color: '#000000',
   },
 });
 

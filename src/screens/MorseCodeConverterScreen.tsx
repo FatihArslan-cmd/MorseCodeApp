@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, Vibration } from 'react-native';
 import { TextInput, Button, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import { Audio } from 'expo-av';
@@ -6,6 +6,7 @@ import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Impor
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -15,6 +16,8 @@ const MorseCodeConverter: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const shortBeep = useRef<Audio.Sound>(new Audio.Sound());
   const longBeep = useRef<Audio.Sound>(new Audio.Sound());
+
+  const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
 
   // Load sound files
   const loadSounds = async () => {
@@ -91,7 +94,7 @@ const MorseCodeConverter: React.FC = () => {
   const toggleConversionMode = () => {
     setIsTextToMorse(!isTextToMorse);
     setConvertedText(''); // Reset the converted text
-    setInputText('')
+    setInputText('');
   };
 
   // Load sounds when the component mounts and unload when it unmounts
@@ -104,12 +107,14 @@ const MorseCodeConverter: React.FC = () => {
 
   return (
     <PaperProvider>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[styles.safeArea, isDarkMode ? styles.darkSafeArea : styles.lightSafeArea]}>
         <Animatable.View animation="fadeInDownBig" duration={1000}>
           <ScrollView contentContainerStyle={styles.container}>
-            <Card style={styles.card}>
+            <Card style={[styles.card, isDarkMode ? styles.cardDark : styles.cardLight]}>
               <Card.Content>
-                <Title>{isTextToMorse ? 'Enter Text' : 'Enter Morse Code'}</Title>
+                <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>
+                  {isTextToMorse ? 'Enter Text' : 'Enter Morse Code'}
+                </Title>
                 <TextInput
                   label={isTextToMorse ? 'Text' : 'Morse Code'}
                   mode="outlined"
@@ -117,6 +122,7 @@ const MorseCodeConverter: React.FC = () => {
                   onChangeText={text => setInputText(text)}
                   style={styles.input}
                   keyboardType={isTextToMorse ? 'default' : 'visible-password'}
+                  theme={{ colors: { text: isDarkMode ? '#ffffff' : '#000000', primary: isDarkMode ? '#bb86fc' : '#6200ee' } }}
                 />
                 <Button mode="contained" onPress={handleConvert} style={styles.button}>
                   {isTextToMorse ? 'Convert to Morse Code' : 'Convert to Text'}
@@ -129,17 +135,17 @@ const MorseCodeConverter: React.FC = () => {
 
             {convertedText !== '' && (
               <Animatable.View animation="fadeInUpBig" duration={1000}>
-                <Card style={styles.card}>
-                  <Button
-                    mode="text"
-                    onPress={vibrateMorseCode}
-                    style={styles.vibrationButton}
-                  >
-               <MaterialCommunityIcons name="vibrate" size={24} color="black" />
+                <Card style={[styles.card, isDarkMode ? styles.cardDark : styles.cardLight]}>
+                  <Button mode="text" onPress={vibrateMorseCode} style={styles.vibrationButton}>
+                    <MaterialCommunityIcons name="vibrate" size={24} color={isDarkMode ? '#ffffff' : 'black'} />
                   </Button>
                   <Card.Content>
-                    <Title>{isTextToMorse ? 'Morse Code' : 'Text'}</Title>
-                    <Paragraph style={styles.convertedText}>{convertedText}</Paragraph>
+                    <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>
+                      {isTextToMorse ? 'Morse Code' : 'Text'}
+                    </Title>
+                    <Paragraph style={[styles.convertedText, isDarkMode ? styles.darkConvertedText : styles.lightConvertedText]}>
+                      {convertedText}
+                    </Paragraph>
                     {isTextToMorse && (
                       <>
                         <Button
@@ -172,13 +178,25 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+  darkSafeArea: {
+    backgroundColor: '#121212',
+  },
+  lightSafeArea: {
+    backgroundColor: '#ffffff',
+  },
   container: {
     padding: 20,
   },
   card: {
     marginBottom: 20,
     position: 'relative', // Added for absolute positioning of the vibration button
-    paddingVertical:10
+    paddingVertical: 10,
+  },
+  cardDark: {
+    backgroundColor: '#1e1e1e',
+  },
+  cardLight: {
+    backgroundColor: '#f8f8ff',
   },
   input: {
     marginBottom: 10,
@@ -197,7 +215,13 @@ const styles = StyleSheet.create({
   convertedText: {
     fontSize: 18,
     letterSpacing: 1.5,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+  },
+  darkConvertedText: {
+    color: '#ffffff',
+  },
+  lightConvertedText: {
+    color: '#000000',
   },
   beepContainer: {
     position: 'absolute',
@@ -208,6 +232,12 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: 'bold',
     color: 'red',
+  },
+  darkTitle: {
+    color: '#ffffff',
+  },
+  lightTitle: {
+    color: '#000000',
   },
 });
 

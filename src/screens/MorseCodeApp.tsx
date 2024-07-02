@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -8,6 +8,7 @@ import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 
 type RootStackParamList = {
   Chart: undefined;
@@ -22,7 +23,9 @@ const MorseCodeApp: React.FC = () => {
   const [startTime, setStartTime] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
-  const navigation = useNavigation<MorseCodeScreenNavigationProp>(); 
+  const navigation = useNavigation<MorseCodeScreenNavigationProp>();
+
+  const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
 
   const handlePressIn = () => {
     setIsPressing(true);
@@ -50,7 +53,7 @@ const MorseCodeApp: React.FC = () => {
           setRecognizedLetters(prev => [...prev, foundKey]);
         }
         setMorseCode('');
-      }, 2000); 
+      }, 2000);
     }
 
     return () => {
@@ -69,9 +72,11 @@ const MorseCodeApp: React.FC = () => {
       setDeletingIndex(recognizedLetters.length - 1);
     }
   };
+
   const handleDeleteAll = () => {
-      setRecognizedLetters([]);
+    setRecognizedLetters([]);
   };
+
   const handleInfoPress = () => {
     setModalVisible(true);
   };
@@ -87,27 +92,27 @@ const MorseCodeApp: React.FC = () => {
 
   return (
     <PaperProvider>
-      <View style={styles.container}>
+      <View style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
         <TouchableOpacity onPress={() => navigation.navigate('Chart')} style={styles.arrowContainer}>
-          <Entypo name="list" size={32} color="black" />
+          <Entypo name="list" size={32} color={isDarkMode ? 'white' : 'black'} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleInfoPress} style={styles.infoButton}>
-          <Feather name="info" size={32} color="black" />
+          <Feather name="info" size={32} color={isDarkMode ? 'white' : 'black'} />
         </TouchableOpacity>
         <Animatable.View animation="fadeInDownBig" duration={1000}>
-          <Text style={styles.title}>Morse Kod Girişi </Text>
+          <Text style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>Morse Kod Girişi</Text>
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <TouchableOpacity
-            style={styles.button}
+            style={[styles.button, isDarkMode ? styles.darkButton : styles.lightButton]}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
           >
-            <Text style={styles.buttonText}>Basılı Tut </Text>
+            <Text style={[styles.buttonText, isDarkMode ? styles.darkButtonText : styles.lightButtonText]}>Basılı Tut</Text>
           </TouchableOpacity>
         </Animatable.View>
         <Animatable.View key={morseCode} animation="jello" duration={1000}>
-        <Text style={styles.morseCode}>{morseCode} </Text>
+          <Text style={[styles.morseCode, isDarkMode ? styles.darkText : styles.lightText]}>{morseCode}</Text>
         </Animatable.View>
 
         <Animatable.View animation="zoomIn" duration={1000}>
@@ -120,11 +125,11 @@ const MorseCodeApp: React.FC = () => {
                   key={index}
                   onAnimationEnd={handleAnimationEnd}
                 >
-                  <Text style={styles.letter}>{letter}</Text>
+                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter}</Text>
                 </Animatable.View>
               ) : (
                 <Animatable.View animation="fadeInDownBig" duration={1000} key={index}>
-                  <Text style={styles.letter}>{letter} </Text>
+                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter}</Text>
                 </Animatable.View>
               )
             ))}
@@ -132,23 +137,23 @@ const MorseCodeApp: React.FC = () => {
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAll}>
+            <TouchableOpacity style={[styles.deleteButton, isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton]} onPress={handleDeleteAll}>
               <Entypo name="squared-cross" size={32} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.spaceButton} onPress={handleSpace}>
+            <TouchableOpacity style={[styles.spaceButton, isDarkMode ? styles.darkSpaceButton : styles.lightSpaceButton]} onPress={handleSpace}>
               <MaterialCommunityIcons name="keyboard-space" size={32} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+            <TouchableOpacity style={[styles.deleteButton, isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton]} onPress={handleDelete}>
               <MaterialCommunityIcons name="backspace" size={32} color="white" />
             </TouchableOpacity>
           </View>
         </Animatable.View>
       </View>
       <Portal>
-        <Modal visible={modalVisible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
-          <Text>You can practise in this segment</Text>
-          <Text> Long press = ➖ (hyphen)</Text>
-          <Text> Short press = ⚫ (dot)</Text>
+        <Modal visible={modalVisible} onDismiss={hideModal} contentContainerStyle={[styles.modalContainer, isDarkMode ? styles.darkModal : styles.lightModal]}>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}>You can practise in this segment</Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}> Long press = ➖ (hyphen)</Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}> Short press = ⚫ (dot)</Text>
           <Button onPress={hideModal}>Close</Button>
         </Modal>
       </Portal>
@@ -161,6 +166,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  darkContainer: {
+    backgroundColor: '#121212',
+  },
+  lightContainer: {
     backgroundColor: '#f5f5f5',
   },
   arrowContainer: {
@@ -177,17 +187,33 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
   },
+  darkText: {
+    color: '#ffffff',
+  },
+  lightText: {
+    color: '#000000',
+  },
   button: {
     width: 200,
     height: 200,
-    backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 100,
   },
+  darkButton: {
+    backgroundColor: '#1e88e5',
+  },
+  lightButton: {
+    backgroundColor: '#007bff',
+  },
   buttonText: {
-    color: '#fff',
     fontSize: 18,
+  },
+  darkButtonText: {
+    color: '#ffffff',
+  },
+  lightButtonText: {
+    color: '#ffffff',
   },
   morseCode: {
     marginTop: 20,
@@ -209,21 +235,36 @@ const styles = StyleSheet.create({
   },
   spaceButton: {
     padding: 10,
-    backgroundColor: '#007bff',
     borderRadius: 5,
     marginRight: 10,
+  },
+  darkSpaceButton: {
+    backgroundColor: '#1e88e5',
+  },
+  lightSpaceButton: {
+    backgroundColor: '#007bff',
   },
   deleteButton: {
     padding: 10,
-    backgroundColor: '#ff4d4d',
     borderRadius: 5,
     marginRight: 10,
   },
+  darkDeleteButton: {
+    backgroundColor: '#e53935',
+  },
+  lightDeleteButton: {
+    backgroundColor: '#ff4d4d',
+  },
   modalContainer: {
-    backgroundColor: 'white',
     padding: 20,
     margin: 20,
     borderRadius: 10,
+  },
+  darkModal: {
+    backgroundColor: '#333333',
+  },
+  lightModal: {
+    backgroundColor: '#ffffff',
   },
 });
 
