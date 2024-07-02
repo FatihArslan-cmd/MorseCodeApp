@@ -4,18 +4,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Appbar, Card, Button, Title } from 'react-native-paper';
-import DocumentScreen from './DocumentScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import legacyFunction from './Legacy';
 import { ThemeContext } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import DocumentScreen from './DocumentScreen';
 
 type RootStackParamList = {
   Home: undefined;
   MorseCodeConverter: undefined;
   MorseCodeApp: undefined;
   Settings: undefined;
+  Document:undefined
 };
 
 const HomeScreen = () => {
@@ -29,7 +29,7 @@ const HomeScreen = () => {
       try {
         const isFirstLaunch = await AsyncStorage.getItem('isFirstLaunch');
         if (isFirstLaunch === null) {
-          setShowDocumentModal(true);
+          navigation.navigate('Document')
           await AsyncStorage.setItem('isFirstLaunch', 'false');
         }
       } catch (error) {
@@ -44,7 +44,7 @@ const HomeScreen = () => {
     <View style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
       <Appbar.Header style={[ isDarkMode ? styles.darkContainer : styles.lightContainer]}>
         <Appbar.Content color={isDarkMode ? 'white' : 'black'} title="Learn Morse Code" />
-        <TouchableOpacity onPress={() => setShowDocumentModal(true)}>
+        <TouchableOpacity onPress={() => navigation.navigate('Document')}>
           <Ionicons name="document-text-outline" size={32} color={isDarkMode ? 'white' : 'black'} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
@@ -55,7 +55,7 @@ const HomeScreen = () => {
         <Card style={styles.card}>
           <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
           <Card.Content style={[ isDarkMode ? styles.cardDarkContainer : styles.lightContainer]}>
-          <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>{t('Morse Code Converter')}</Title>
+            <Title style={isDarkMode ? styles.darkTitle : styles.lightTitle}>{t('Morse Code Converter')}</Title>
           </Card.Content>
           <Card.Actions style={[ isDarkMode ? styles.cardDarkContainer : styles.lightContainer]}>
             <Button mode="contained" onPress={() => navigation.navigate('MorseCodeConverter')}>
@@ -75,7 +75,6 @@ const HomeScreen = () => {
           </Card.Actions>
         </Card>
       </View>
-      <DocumentScreen visible={showDocumentModal} onClose={() => setShowDocumentModal(false)} />
     </View>
   );
 };

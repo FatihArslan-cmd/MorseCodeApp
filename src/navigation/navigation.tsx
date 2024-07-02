@@ -7,6 +7,7 @@ import MorseCodeApp from '../screens/MorseCodeApp';
 import HomeScreen from '../screens/HomeScreen';
 import MorseCodeChart from '../screens/MorseCodeChart';
 import SettingScreen from '../screens/SettingScreen';
+import DocumentScreen from '../screens/DocumentScreen';
 const Stack = createStackNavigator();
 
 const Navigation = () => {
@@ -31,6 +32,11 @@ const Navigation = () => {
         <Stack.Screen 
           name="MorseCodeConverter" 
           component={MorseCodeConverter} 
+          options={{ headerShown: false }} 
+        />
+         <Stack.Screen 
+          name="Document" 
+          component={DocumentScreen} 
           options={{ headerShown: false }} 
         />
         <Stack.Screen

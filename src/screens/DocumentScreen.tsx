@@ -6,11 +6,18 @@ import CustomText from '../components/CustomText';
 import PageIndicator from './PageIndicator';
 import { ThemeContext } from '../context/ThemeContext'; // Adjust path as per your project structure
 import { useTranslation } from 'react-i18next';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 
+type RootStackParamList = {
+  Splash: undefined;
+  Home: undefined;
+};
 const DocumentScreen = ({ visible, onClose }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const { isDarkMode } = useContext(ThemeContext);
   const { t } = useTranslation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Splash'>>();
 
   return (
     <View style={[styles.centeredView, isDarkMode ? styles.darkBackground : styles.lightBackground]}>
@@ -69,7 +76,7 @@ const DocumentScreen = ({ visible, onClose }) => {
                 <CustomText style={[styles.text, isDarkMode ? styles.darkText : styles.lightText]}>
                   {t('This app offers an interactive Morse code learning experience.')}
                 </CustomText>
-                <TouchableOpacity onPress={onClose} style={[styles.closeButton, isDarkMode ? styles.darkButton : styles.lightButton]}>
+                <TouchableOpacity onPress={() => navigation.navigate('Home')} style={[styles.closeButton, isDarkMode ? styles.darkButton : styles.lightButton]}>
                   <CustomText style={styles.closeButtonText}>{t('Continue App...')}</CustomText>
                 </TouchableOpacity>
               </View>

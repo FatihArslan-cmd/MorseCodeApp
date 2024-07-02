@@ -1,6 +1,7 @@
 import React, { useContext, useState, useMemo, useCallback } from 'react';
 import { View, Text, Switch, TouchableOpacity, Modal, FlatList, SafeAreaView, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import CountryFlag from 'react-native-country-flag';
 import { ThemeContext } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 interface Language {
   label: string;
   code: string;
+  flag: string; // Added flag property
 }
 
 const SettingsScreen: React.FC = () => {
@@ -18,55 +20,55 @@ const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
 
   const languages: Language[] = useMemo(() => [
-    { label: 'English', code: 'en' },
-    { label: 'Chinese', code: 'zh' },
-    { label: 'Hindi', code: 'hi' },
-    { label: 'Spanish', code: 'es' },
-    { label: 'French', code: 'fr' },
-    { label: 'Arabic', code: 'ar' },
-    { label: 'Bengali', code: 'bn' },
-    { label: 'Russian', code: 'ru' },
-    { label: 'Portuguese', code: 'pt' },
-    { label: 'Urdu', code: 'ur' },
-    { label: 'Indonesian', code: 'id' },
-    { label: 'German', code: 'de' },
-    { label: 'Japanese', code: 'ja' },
-    { label: 'Marathi', code: 'mr' },
-    { label: 'Telugu', code: 'te' },
-    { label: 'Turkish', code: 'tr' },
-    { label: 'Tamil', code: 'ta' },
-    { label: 'Cantonese', code: 'yue' },
-    { label: 'Vietnamese', code: 'vi' },
-    { label: 'Korean', code: 'ko' },
-    { label: 'Italian', code: 'it' },
-    { label: 'Polish', code: 'pl' },
-    { label: 'Ukrainian', code: 'uk' },
-    { label: 'Dutch', code: 'nl' },
-    { label: 'Tagalog', code: 'fil' },
-    { label: 'Persian', code: 'fa' },
-    { label: 'Romanian', code: 'ro' },
-    { label: 'Thai', code: 'th' },
-    { label: 'Gujarati', code: 'gu' },
-    { label: 'Kannada', code: 'kn' },
-    { label: 'Malayalam', code: 'ml' },
-    { label: 'Oriya', code: 'or' },
-    { label: 'Burmese', code: 'my' },
-    { label: 'Punjabi', code: 'pa' },
-    { label: 'Uzbek', code: 'uz' },
-    { label: 'Sinhala', code: 'si' },
-    { label: 'Azerbaijani', code: 'az' },
-    { label: 'Greek', code: 'el' },
-    { label: 'Hungarian', code: 'hu' },
-    { label: 'Czech', code: 'cs' },
-    { label: 'Swedish', code: 'sv' },
-    { label: 'Danish', code: 'da' },
-    { label: 'Slovak', code: 'sk' },
-    { label: 'Finnish', code: 'fi' },
-    { label: 'Norwegian', code: 'no' },
-    { label: 'Hebrew', code: 'he' },
-    { label: 'Kazakh', code: 'kk' },
-    { label: 'Nepali', code: 'ne' },
-    { label: 'Serbian', code: 'sr' },
+    { label: 'English', code: 'en', flag: 'GB' },
+    { label: 'Chinese', code: 'zh', flag: 'CN' },
+    { label: 'Hindi', code: 'hi', flag: 'IN' },
+    { label: 'Spanish', code: 'es', flag: 'ES' },
+    { label: 'French', code: 'fr', flag: 'FR' },
+    { label: 'Arabic', code: 'ar', flag: 'SA' },
+    { label: 'Bengali', code: 'bn', flag: 'BD' },
+    { label: 'Russian', code: 'ru', flag: 'RU' },
+    { label: 'Portuguese', code: 'pt', flag: 'PT' },
+    { label: 'Urdu', code: 'ur', flag: 'PK' },
+    { label: 'Indonesian', code: 'id', flag: 'ID' },
+    { label: 'German', code: 'de', flag: 'DE' },
+    { label: 'Japanese', code: 'ja', flag: 'JP' },
+    { label: 'Marathi', code: 'mr', flag: 'IN' },
+    { label: 'Telugu', code: 'te', flag: 'IN' },
+    { label: 'Turkish', code: 'tr', flag: 'TR' },
+    { label: 'Tamil', code: 'ta', flag: 'IN' },
+    { label: 'Cantonese', code: 'yue', flag: 'HK' },
+    { label: 'Vietnamese', code: 'vi', flag: 'VN' },
+    { label: 'Korean', code: 'ko', flag: 'KR' },
+    { label: 'Italian', code: 'it', flag: 'IT' },
+    { label: 'Polish', code: 'pl', flag: 'PL' },
+    { label: 'Ukrainian', code: 'uk', flag: 'UA' },
+    { label: 'Dutch', code: 'nl', flag: 'NL' },
+    { label: 'Tagalog', code: 'fil', flag: 'PH' },
+    { label: 'Persian', code: 'fa', flag: 'IR' },
+    { label: 'Romanian', code: 'ro', flag: 'RO' },
+    { label: 'Thai', code: 'th', flag: 'TH' },
+    { label: 'Gujarati', code: 'gu', flag: 'IN' },
+    { label: 'Kannada', code: 'kn', flag: 'IN' },
+    { label: 'Malayalam', code: 'ml', flag: 'IN' },
+    { label: 'Oriya', code: 'or', flag: 'IN' },
+    { label: 'Burmese', code: 'my', flag: 'MM' },
+    { label: 'Punjabi', code: 'pa', flag: 'IN' },
+    { label: 'Uzbek', code: 'uz', flag: 'UZ' },
+    { label: 'Sinhala', code: 'si', flag: 'LK' },
+    { label: 'Azerbaijani', code: 'az', flag: 'AZ' },
+    { label: 'Greek', code: 'el', flag: 'GR' },
+    { label: 'Hungarian', code: 'hu', flag: 'HU' },
+    { label: 'Czech', code: 'cs', flag: 'CZ' },
+    { label: 'Swedish', code: 'sv', flag: 'SE' },
+    { label: 'Danish', code: 'da', flag: 'DK' },
+    { label: 'Slovak', code: 'sk', flag: 'SK' },
+    { label: 'Finnish', code: 'fi', flag: 'FI' },
+    { label: 'Norwegian', code: 'no', flag: 'NO' },
+    { label: 'Hebrew', code: 'he', flag: 'IL' },
+    { label: 'Kazakh', code: 'kk', flag: 'KZ' },
+    { label: 'Nepali', code: 'ne', flag: 'NP' },
+    { label: 'Serbian', code: 'sr', flag: 'RS' },
   ], []);
 
   const selectedLanguageLabel = useMemo(() => {
@@ -150,7 +152,8 @@ const SettingsScreen: React.FC = () => {
               data={languages}
               keyExtractor={(item) => item.code}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleLanguageSelect(item)}>
+                <TouchableOpacity onPress={() => handleLanguageSelect(item)} style={styles.languageItemContainer}>
+                  <CountryFlag isoCode={item.flag} size={20} />
                   <Text style={[styles.languageItem, isDarkMode ? styles.darkText : styles.lightText]}>{item.label}</Text>
                 </TouchableOpacity>
               )}
@@ -261,9 +264,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  languageItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
   languageItem: {
     fontSize: 16,
-    paddingVertical: 10,
+    marginLeft: 10,
   },
   closeButton: {
     marginTop: 20,
