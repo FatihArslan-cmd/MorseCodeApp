@@ -8,7 +8,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ThemeContext } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import DocumentScreen from './DocumentScreen';
 
 type RootStackParamList = {
   Home: undefined;
@@ -20,8 +19,13 @@ type RootStackParamList = {
 
 const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
-  const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const { isDarkMode } = useContext(ThemeContext);
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    return null;
+  }
+
+  const { isDarkMode } = themeContext;
   const { t } = useTranslation();
 
   useEffect(() => {

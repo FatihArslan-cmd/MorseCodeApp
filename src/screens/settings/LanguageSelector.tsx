@@ -1,23 +1,28 @@
-import React, { useContext, useState, useMemo, useCallback } from 'react';
-import { View, Text, Switch, TouchableOpacity, Modal, FlatList, SafeAreaView, StyleSheet } from 'react-native';
+import React, { useCallback, useMemo, useState,useContext } from 'react';
+import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CountryFlag from 'react-native-country-flag';
-import { ThemeContext } from '../context/ThemeContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from '../../context/ThemeContext';
 
 interface Language {
   label: string;
   code: string;
-  flag: string; // Added flag property
+  flag: string;
 }
 
-const SettingsScreen: React.FC = () => {
-  const [isVibrateEnabled, setIsVibrateEnabled] = useState<boolean>(false);
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+const LanguageSelector: React.FC = () => {
   const { currentLanguage, changeLanguage } = useLanguage();
-  const [isLanguageModalVisible, setLanguageModalVisible] = useState<boolean>(false);
   const { t } = useTranslation();
+  const [isLanguageModalVisible, setLanguageModalVisible] = useState<boolean>(false);
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    return null; // or provide a fallback UI
+  }
+
+  const { isDarkMode } = themeContext;
 
   const languages: Language[] = useMemo(() => [
     { label: 'English', code: 'en', flag: 'GB' },
@@ -70,7 +75,6 @@ const SettingsScreen: React.FC = () => {
     { label: 'Nepali', code: 'ne', flag: 'NP' },
     { label: 'Serbian', code: 'sr', flag: 'RS' },
   ], []);
-
   const selectedLanguageLabel = useMemo(() => {
     return languages.find(lang => lang.code === currentLanguage)?.label || 'English';
   }, [currentLanguage, languages]);
@@ -89,55 +93,12 @@ const SettingsScreen: React.FC = () => {
   }, [changeLanguage, closeLanguageModal]);
 
   return (
-    <SafeAreaView style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
-      <View style={[styles.header, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
-        <Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>Settings</Text>
-      </View>
-      <View style={styles.separator} />
-
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, isDarkMode ? styles.darkText : styles.lightText]}>{t('Common')}</Text>
-        <View style={styles.settingItem}>
-          <Icon name="brush" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
-          <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Theme')}</Text>
-          <Text style={[styles.settingSubText, isDarkMode ? styles.darkSubText : styles.lightSubText]}>
-            {isDarkMode ? 'Dark ' : 'Light '}
-          </Text>
-          <Switch value={isDarkMode} onValueChange={toggleTheme} />
-        </View>
-
-        <TouchableOpacity style={styles.settingItem} onPress={openLanguageModal}>
-          <Icon name="language" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
-          <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Language')}</Text>
-          <Text style={[styles.settingSubText, isDarkMode ? styles.darkSubText : styles.lightSubText]}>{selectedLanguageLabel} </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.separator} />
-
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, isDarkMode ? styles.darkText : styles.lightText]}>{t('Help')}</Text>
-        <View style={styles.settingItem}>
-          <Icon name="feedback" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
-          <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Feedback')}</Text>
-        </View>
-        <View style={styles.settingItem}>
-          <Icon name="privacy-tip" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
-          <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Privacy Policy')}</Text>
-        </View>
-        <View style={styles.settingItem}>
-          <Icon name="info" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
-          <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>version 1.0.2</Text>
-        </View>
-      </View>
-      <View style={styles.separator} />
-
-      <View style={styles.footer}>
-        <Text style={[styles.bottomText, isDarkMode ? styles.darkText : styles.lightText]}>Learn Morse Code</Text>
-        <Text style={[styles.copyRightText, isDarkMode ? styles.darkSubText : styles.lightSubText]}>
-          © 2024 Fatih Arslan
-        </Text>
-      </View>
+    <>
+      <TouchableOpacity style={styles.settingItem} onPress={openLanguageModal}>
+        <Icon name="language" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
+        <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Language')}</Text>
+        <Text style={[styles.settingSubText, isDarkMode ? styles.darkSubText : styles.lightSubText]}>{selectedLanguageLabel} </Text>
+      </TouchableOpacity>
 
       <Modal
         animationType="slide"
@@ -158,7 +119,7 @@ const SettingsScreen: React.FC = () => {
                 </TouchableOpacity>
               )}
               contentContainerStyle={{ flexGrow: 1 }}
-              style={{ maxHeight: '70%' }} 
+              style={{ height: '70%' }}
             />
             <TouchableOpacity style={styles.closeButton} onPress={closeLanguageModal}>
               <Text style={styles.closeButtonText}>Close</Text>
@@ -166,31 +127,11 @@ const SettingsScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-  },
-  header: {
-    paddingBottom: 20,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -206,39 +147,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 10,
   },
-  footer: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  bottomText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  copyRightText: {
-    fontSize: 12,
-  },
-  lightContainer: {
-    backgroundColor: '#ffffff',
-  },
-  darkContainer: {
-    backgroundColor: '#000000',
+  darkText: {
+    color: '#ffffff',
   },
   lightText: {
     color: '#000000',
   },
-  darkText: {
-    color: '#ffffff',
-  },
-  lightSubText: {
-    color: '#666666',
-  },
   darkSubText: {
     color: '#999999',
   },
-  separator: {
-    borderBottomColor: '#cccccc',
-    borderBottomWidth: 1,
-    marginVertical: 20,
+  lightSubText: {
+    color: '#666666',
   },
   modalOverlay: {
     flex: 1,
@@ -248,7 +167,6 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: '80%',
-    maxHeight: '80%', // Set maximum height for the modal container
     backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 10,
@@ -286,4 +204,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(SettingsScreen);
+export default LanguageSelector;

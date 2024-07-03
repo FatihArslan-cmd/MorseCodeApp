@@ -27,7 +27,13 @@ const MorseCodeApp: React.FC = () => {
   const navigation = useNavigation<MorseCodeScreenNavigationProp>();
   const { t } = useTranslation();
 
-  const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    return null;
+  }
+
+  const { isDarkMode } = themeContext;
 
   const handlePressIn = () => {
     setIsPressing(true);

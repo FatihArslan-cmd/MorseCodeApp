@@ -9,13 +9,19 @@ import { morseAlphabet } from '../utils/morseAlphabet'; // Importing the Morse a
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { useTranslation } from 'react-i18next';
 
-const MorseCodeChart = () => {
+const MorseCodeChart: React.FC = () => {
   const [shortBeep, setShortBeep] = useState(new Audio.Sound());
   const [longBeep, setLongBeep] = useState(new Audio.Sound());
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef<ScrollView>(null);  // Typing for ScrollView ref
   const { t } = useTranslation();
 
-  const { isDarkMode } = useContext(ThemeContext); // Use ThemeContext to access isDarkMode
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    return null;
+  }
+
+  const { isDarkMode } = themeContext;
 
   const loadSounds = async () => {
     try {
@@ -42,7 +48,7 @@ const MorseCodeChart = () => {
     };
   }, []);
 
-  const playBeep = async (code) => {
+  const playBeep = async (code: string) => {  // Explicitly typing `code` as string
     for (let char of code) {
       if (char === '.') {
         await shortBeep.replayAsync();
@@ -55,7 +61,7 @@ const MorseCodeChart = () => {
 
   const handleScrollToEnd = () => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
+      scrollViewRef.current.scrollToEnd({ animated: true }); // Now properly typed
     }
   };
 
@@ -72,8 +78,12 @@ const MorseCodeChart = () => {
           <Title style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>{t('International Morse Code')}</Title>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Letter')}</Text></DataTable.Title>
-              <DataTable.Title><Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Morse Code')}</Text></DataTable.Title>
+              <DataTable.Title>
+                <Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Letter')}</Text>
+              </DataTable.Title>
+              <DataTable.Title>
+                <Text style={[styles.headerText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Morse Code')}</Text>
+              </DataTable.Title>
             </DataTable.Header>
 
             {morseEntries.map(([letter, code]) => (

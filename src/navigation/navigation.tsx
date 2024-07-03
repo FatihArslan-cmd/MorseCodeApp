@@ -6,9 +6,14 @@ import SplashScreenComponent from '../screens/SplashScreenComponent';
 import MorseCodeApp from '../screens/MorseCodeApp';
 import HomeScreen from '../screens/HomeScreen';
 import MorseCodeChart from '../screens/MorseCodeChart';
-import SettingScreen from '../screens/SettingScreen';
-import DocumentScreen from '../screens/DocumentScreen';
+import SettingScreen from '../screens/settings/SettingScreen';
+import DocumentScreen from '../screens/DocumentScreen/DocumentScreen';
+
 const Stack = createStackNavigator();
+
+const DocumentScreenWrapper = () => (
+  <DocumentScreen visible={true} onClose={() => console.log("Closed")} />
+);
 
 const Navigation = () => {
   return (
@@ -34,14 +39,14 @@ const Navigation = () => {
           component={MorseCodeConverter} 
           options={{ headerShown: false }} 
         />
-         <Stack.Screen 
-          name="Document" 
-          component={DocumentScreen} 
-          options={{ headerShown: false }} 
-        />
         <Stack.Screen
           name="MorseCodeApp"
           component={MorseCodeApp}
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="Document" 
+          component={DocumentScreenWrapper} 
           options={{ headerShown: false }} 
         />
         <Stack.Screen

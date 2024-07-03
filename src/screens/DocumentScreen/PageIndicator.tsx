@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-type PageIndicatorProps = {
+interface PageIndicatorProps {
   total: number;
   currentIndex: number;
-};
+}
 
 const PageIndicator: React.FC<PageIndicatorProps> = ({ total, currentIndex }) => {
   return (
