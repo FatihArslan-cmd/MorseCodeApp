@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import ThemeSwitch from './ThemeSwitch';
 import LanguageSelector from './LanguageSelector';
 import SettingsSection from './SettingsSection';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads'; // Import Ad components
 
 const SettingsScreen: React.FC = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -82,6 +83,8 @@ const SettingsScreen: React.FC = () => {
         </Text>
       </View>
 
+      
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={hideSnackbar}
@@ -93,6 +96,15 @@ const SettingsScreen: React.FC = () => {
       >
         version 1.0.2
       </Snackbar>
+      <View style={styles.bannerContainer}>
+        <BannerAd
+          unitId={'ca-app-pub-3990675625304140/3548618642'} // Replace this with your Ad Unit ID
+          size={BannerAdSize.BANNER} // Small banner size
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -154,6 +166,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
     marginLeft: 10,
+  },
+  bannerContainer: {
+    alignItems: 'center',
+    marginTop:'auto'
   },
 });
 

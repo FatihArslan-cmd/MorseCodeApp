@@ -33,6 +33,14 @@
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "225bb5c1-d829-4308-8a29-6958980d993b"
+      }
+    }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3990675625304140~5026649019"
   }
 }

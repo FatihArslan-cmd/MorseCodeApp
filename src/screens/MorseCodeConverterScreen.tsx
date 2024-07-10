@@ -8,6 +8,7 @@ import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads'; // Import Ad components
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -176,6 +177,15 @@ const MorseCodeConverter: React.FC = () => {
             </Animatable.View>
           )}
         </Animatable.View>
+        <View style={styles.bannerContainer}>
+          <BannerAd
+            unitId={'ca-app-pub-3990675625304140/3548618642'} // Replace this with your Ad Unit ID
+            size={BannerAdSize.MEDIUM_RECTANGLE} // Larger ad size
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
       </SafeAreaView>
     </PaperProvider>
   );
@@ -245,6 +255,10 @@ const styles = StyleSheet.create({
   },
   lightTitle: {
     color: '#000000',
+  },
+  bannerContainer: {
+    alignItems: 'center',
+    paddingBottom: 10,
   },
 });
 

@@ -8,8 +8,9 @@ import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
-import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
+import { ThemeContext } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'; // Import Ad components
 
 type RootStackParamList = {
   Chart: undefined;
@@ -43,9 +44,9 @@ const MorseCodeApp: React.FC = () => {
   const handlePressOut = () => {
     const pressDuration = Date.now() - startTime;
     if (pressDuration < 300) {
-      setMorseCode( prev => prev + '.' );
+      setMorseCode((prev) => prev + '.');
     } else {
-      setMorseCode( prev => prev + '-' );
+      setMorseCode((prev) => prev + '-');
     }
     setIsPressing(false);
   };
@@ -55,10 +56,10 @@ const MorseCodeApp: React.FC = () => {
     if (!isPressing && morseCode) {
       timeout = setTimeout(() => {
         const foundKey = Object.keys(morseAlphabet).find(
-          key => morseAlphabet[key] === morseCode
+          (key) => morseAlphabet[key] === morseCode
         );
         if (foundKey) {
-          setRecognizedLetters(prev => [...prev, foundKey ]);
+          setRecognizedLetters((prev) => [...prev, foundKey]);
         }
         setMorseCode('');
       }, 2000);
@@ -72,7 +73,7 @@ const MorseCodeApp: React.FC = () => {
   }, [morseCode, isPressing]);
 
   const handleSpace = () => {
-    setRecognizedLetters(prev => [...prev, ' ']);
+    setRecognizedLetters((prev) => [...prev, ' ']);
   };
 
   const handleDelete = () => {
@@ -94,7 +95,7 @@ const MorseCodeApp: React.FC = () => {
   };
 
   const handleAnimationEnd = () => {
-    setRecognizedLetters(prev => prev.slice(0, -1));
+    setRecognizedLetters((prev) => prev.slice(0, -1));
     setDeletingIndex(null);
   };
 
@@ -108,7 +109,9 @@ const MorseCodeApp: React.FC = () => {
           <Feather name="info" size={32} color={isDarkMode ? 'white' : 'black'} />
         </TouchableOpacity>
         <Animatable.View animation="fadeInDownBig" duration={1000}>
-          <Text style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>{t('Enter Morse Code')} </Text>
+          <Text style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>
+            {t('Enter Morse Code')}
+          </Text>
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <TouchableOpacity
@@ -116,13 +119,16 @@ const MorseCodeApp: React.FC = () => {
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
           >
-            <Text style={[styles.buttonText, isDarkMode ? styles.darkButtonText : styles.lightButtonText]}>{t('Hold Down')} </Text>
+            <Text style={[styles.buttonText, isDarkMode ? styles.darkButtonText : styles.lightButtonText]}>
+              {t('Hold Down')}
+            </Text>
           </TouchableOpacity>
         </Animatable.View>
         <Animatable.View key={morseCode} animation="jello" duration={1000}>
-          <Text style={[styles.morseCode, isDarkMode ? styles.darkText : styles.lightText]}>{morseCode} </Text>
+          <Text style={[styles.morseCode, isDarkMode ? styles.darkText : styles.lightText]}>
+            {morseCode}
+          </Text>
         </Animatable.View>
-
         <Animatable.View animation="zoomIn" duration={1000}>
           <View style={styles.lettersContainer}>
             {recognizedLetters.map((letter, index) => (
@@ -133,11 +139,15 @@ const MorseCodeApp: React.FC = () => {
                   key={index}
                   onAnimationEnd={handleAnimationEnd}
                 >
-                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter} </Text>
+                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>
+                    {letter}
+                  </Text>
                 </Animatable.View>
               ) : (
                 <Animatable.View animation="fadeInDownBig" duration={1000} key={index}>
-                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>{letter} </Text>
+                  <Text style={[styles.letter, isDarkMode ? styles.darkText : styles.lightText]}>
+                    {letter}
+                  </Text>
                 </Animatable.View>
               )
             ))}
@@ -145,23 +155,51 @@ const MorseCodeApp: React.FC = () => {
         </Animatable.View>
         <Animatable.View animation="bounceIn" duration={1000}>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.deleteButton, isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton]} onPress={handleDeleteAll}>
+            <TouchableOpacity
+              style={[styles.deleteButton, isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton]}
+              onPress={handleDeleteAll}
+            >
               <Entypo name="squared-cross" size={32} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.spaceButton, isDarkMode ? styles.darkSpaceButton : styles.lightSpaceButton]} onPress={handleSpace}>
+            <TouchableOpacity
+              style={[styles.spaceButton, isDarkMode ? styles.darkSpaceButton : styles.lightSpaceButton]}
+              onPress={handleSpace}
+            >
               <MaterialCommunityIcons name="keyboard-space" size={32} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.deleteButton, isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton]} onPress={handleDelete}>
+            <TouchableOpacity
+              style={[styles.deleteButton, isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton]}
+              onPress={handleDelete}
+            >
               <MaterialCommunityIcons name="backspace" size={32} color="white" />
             </TouchableOpacity>
           </View>
         </Animatable.View>
+        <View style={styles.bannerContainer}>
+          <BannerAd
+            unitId={'ca-app-pub-3990675625304140/3548618642'} // Replace this with your Ad Unit ID
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: false,
+            }}
+          />
+        </View>
       </View>
       <Portal>
-        <Modal visible={modalVisible} onDismiss={hideModal} contentContainerStyle={[styles.modalContainer, isDarkMode ? styles.darkModal : styles.lightModal]}>
-          <Text style={isDarkMode ? styles.darkText : styles.lightText}>{t('You can practise in this segment')}</Text>
-          <Text style={isDarkMode ? styles.darkText : styles.lightText}> {t('Long press')} = ➖ ({t('hyphen')})</Text>
-          <Text style={isDarkMode ? styles.darkText : styles.lightText}> {t('Short press')} = ⚫ ({t('dot')})</Text>
+        <Modal
+          visible={modalVisible}
+          onDismiss={hideModal}
+          contentContainerStyle={[styles.modalContainer, isDarkMode ? styles.darkModal : styles.lightModal]}
+        >
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}>
+            {t('You can practise in this segment')}
+          </Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}>
+            {t('Long press')} = ➖ ({t('hyphen')})
+          </Text>
+          <Text style={isDarkMode ? styles.darkText : styles.lightText}>
+            {t('Short press')} = ⚫ ({t('dot')})
+          </Text>
           <Button onPress={hideModal}>Close</Button>
         </Modal>
       </Portal>
@@ -262,6 +300,13 @@ const styles = StyleSheet.create({
   },
   lightDeleteButton: {
     backgroundColor: '#ff4d4d',
+  },
+  bannerContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 10,
   },
   modalContainer: {
     padding: 20,
