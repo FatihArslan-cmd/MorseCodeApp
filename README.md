@@ -30,6 +30,7 @@ Key Features:<br/>
 -🌍 **Multi-language Support**: The application supports 40+ languages. <br/>
 -🔄 **Simulation**: Users can simulate behavior of morse code <br/>
 -🛒 **Vibration , Sound**: Understand the morse code by listening vibration or sound. <br/>
+-🌍 **ADS**: Application contains google mobile ads through React native google mobile ads library<br/>
 
 <hr>
 
