@@ -24,6 +24,7 @@
 
 ## <a id="about-the-project"></a>📘 About The Project
 
+
 Key Features:<br/>
 -🛒 **Morse code converter**: Users can convert morse code to text or vice versa<br/>
 -📊 **Theme**: Dark theme Light theme<br/>
@@ -58,6 +59,8 @@ Ensure you have the following software installed:
 This project was bootstrapped with [Create React Native App](https://github.com/expo/create-react-native-app?tab=readme-ov-file).
 
 ### <a id="installation"></a>⚙️ Installation
+
+You can install the app as apk with the link : https://www.mediafire.com/file/1smn60p78fxw0n3/LearnMorseCode.apk/file
 
 1. Clone the repository:
     ```bash
