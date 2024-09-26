@@ -86,6 +86,7 @@ const SettingsScreen: React.FC = () => {
       
 
       <Snackbar
+        style={{zIndex:9999}}
         visible={snackbarVisible}
         onDismiss={hideSnackbar}
         duration={Snackbar.DURATION_SHORT}

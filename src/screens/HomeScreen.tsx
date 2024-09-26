@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ThemeContext } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'; // Import Ad components
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { StatusBar } from 'expo-status-bar'; // Import the StatusBar
 
 type RootStackParamList = {
   Home: undefined;
@@ -47,6 +48,8 @@ const HomeScreen = () => {
 
   return (
     <View style={[styles.container, isDarkMode ? styles.darkContainer : styles.lightContainer]}>
+      <StatusBar style="light" />
+
       <Appbar.Header style={[isDarkMode ? styles.darkContainer : styles.lightContainer]}>
         <Appbar.Content color={isDarkMode ? 'white' : 'black'} title="Learn Morse Code" />
         <TouchableOpacity onPress={() => navigation.navigate('Document')}>
@@ -82,7 +85,7 @@ const HomeScreen = () => {
       </View>
       <View style={styles.bannerContainer}>
         <BannerAd
-          unitId={'ca-app-pub-3990675625304140/3548618642'} // Replace this with your Ad Unit ID
+          unitId={'ca-app-pub-3990675625304140/3548618642'}
           size={BannerAdSize.BANNER}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
@@ -96,22 +99,20 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between', // Ensure content and banner ad are spaced correctly
+    justifyContent: 'space-between',
   },
   bannerContainer: {
     alignItems: 'center',
-    marginBottom: 16, // Add some margin if needed
+    marginBottom: 16,
   },
   darkContainer: {
     backgroundColor: '#121212',
   },
   darkTitle: {
     color: '#ffffff',
-    // Additional styles for dark mode Title
   },
   lightTitle: {
     color: '#000000',
-    // Additional styles for light mode Title
   },
   lightContainer: {
     backgroundColor: '#f8f8ff',
@@ -125,9 +126,6 @@ const styles = StyleSheet.create({
   },
   card: {
     marginVertical: 8,
-  },
-  button: {
-    margin: 8,
   },
 });
 

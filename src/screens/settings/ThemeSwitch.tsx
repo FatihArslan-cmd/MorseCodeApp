@@ -3,6 +3,7 @@ import { View, Text, Switch, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { StatusBar } from 'expo-status-bar'; // Import StatusBar
 
 const ThemeSwitch: React.FC = () => {
   const themeContext = useContext(ThemeContext);
@@ -12,11 +13,13 @@ const ThemeSwitch: React.FC = () => {
   }
 
   const { isDarkMode, toggleTheme } = themeContext;
-
   const { t } = useTranslation();
 
   return (
     <View style={styles.settingItem}>
+      {/* StatusBar for dynamic theme */}
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} /> 
+
       <Icon name="brush" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
       <Text style={[styles.settingText, isDarkMode ? styles.darkText : styles.lightText]}>{t('Theme')}</Text>
       <Text style={[styles.settingSubText, isDarkMode ? styles.darkSubText : styles.lightSubText]}>

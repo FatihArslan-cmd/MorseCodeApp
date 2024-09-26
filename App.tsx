@@ -9,8 +9,8 @@ const App = () => {
   return (
     <ThemeProvider>
       <LanguageProvider>
-   <Navigation/>
-   </LanguageProvider>
+          <Navigation/>
+      </LanguageProvider>
    </ThemeProvider>
   );
 };

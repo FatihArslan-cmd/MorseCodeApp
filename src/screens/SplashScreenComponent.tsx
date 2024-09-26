@@ -1,8 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback,useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 
 type RootStackParamList = {
   Splash: undefined;
@@ -10,6 +12,10 @@ type RootStackParamList = {
 };
 
 SplashScreen.preventAutoHideAsync(); 
+const themeContext = useContext(ThemeContext);
+
+
+const { isDarkMode } = themeContext;
 
 const SplashScreenComponent = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Splash'>>();
@@ -32,6 +38,7 @@ const SplashScreenComponent = () => {
       style={styles.container}
       onLayout={onLayoutRootView}
     >
+      <StatusBar  backgroundColor={isDarkMode ? '#121212' : '#f8f8ff'} />
       <Text style={styles.text}>Welcome to Morse Code App!</Text>
       <Text style={styles.text}>.-- . .-.. -.-. --- -- .</Text>
     </View>
