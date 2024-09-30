@@ -14,6 +14,7 @@
 
 1. [📘 About The Project](#about-the-project)
 2. [🚀 Getting Started](#getting-started)
+    - [📸 Screenshots](#screenshots)
     - [📋 Prerequisites](#prerequisites)
     - [⚙️ Installation](#installation)
     - [🛠️ Usage](#usage)
@@ -37,7 +38,11 @@ Key Features:<br/>
 
 <br/>
 <br/>
-
+## <a id="screenshots"></a>📸 Screenshots
+![Ekran görüntüsü 2024-09-26 163555](https://github.com/user-attachments/assets/2b8eb53e-9087-436f-bce1-21baecc0637a)
+![Ekran görüntüsü 2024-09-26 163530](https://github.com/user-attachments/assets/155ebcfe-d7eb-4cdc-a4e0-908d8c316c77)
+![Ekran görüntüsü 2024-09-26 163701](https://github.com/user-attachments/assets/3bed1c98-ead2-4843-bfbb-4679a2fa55f5)
+![Ekran görüntüsü 2024-09-26 163619](https://github.com/user-attachments/assets/cec5de2b-4e83-4bc5-a543-cd6ae9a60ea0)
 
 <br/>
 <br/>
