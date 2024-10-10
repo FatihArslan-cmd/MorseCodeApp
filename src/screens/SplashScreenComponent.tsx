@@ -12,10 +12,8 @@ type RootStackParamList = {
 };
 
 SplashScreen.preventAutoHideAsync(); 
-const themeContext = useContext(ThemeContext);
 
 
-const { isDarkMode } = themeContext;
 
 const SplashScreenComponent = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Splash'>>();
@@ -38,7 +36,6 @@ const SplashScreenComponent = () => {
       style={styles.container}
       onLayout={onLayoutRootView}
     >
-      <StatusBar  backgroundColor={isDarkMode ? '#121212' : '#f8f8ff'} />
       <Text style={styles.text}>Welcome to Morse Code App!</Text>
       <Text style={styles.text}>.-- . .-.. -.-. --- -- .</Text>
     </View>
