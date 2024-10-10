@@ -9,6 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads'; // Import Ad components
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // react-native-vector-icons kullanarak çarpı simgesini ekleyebilirsiniz.
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -124,14 +125,20 @@ const MorseCodeConverter: React.FC = () => {
                   {isTextToMorse ? t('Enter Text') : t('Enter Morse Code')}
                 </Title>
                 <TextInput
-                  label={isTextToMorse ? t('Text') : t('Morse Code')}
-                  mode="outlined"
-                  value={inputText}
-                  onChangeText={text => setInputText(text)}
-                  style={styles.input}
-                  keyboardType={isTextToMorse ? 'default' : 'visible-password'}
-                  theme={{ colors: { text: isDarkMode ? '#ffffff' : '#000000', primary: isDarkMode ? '#bb86fc' : '#6200ee' } }}
-                />
+                   label={isTextToMorse ? t('Text') : t('Morse Code')}
+                     mode="outlined"
+                 value={inputText}
+                     onChangeText={text => setInputText(text)}
+                     style={styles.input}
+                    right={inputText.length > 0 ? (
+                       <TextInput.Icon
+                        icon="close"
+                           onPress={() => setInputText('')} // Clear the input text
+                        />
+                        ) : null} // Conditionally render the close icon
+                         keyboardType={isTextToMorse ? 'default' : 'visible-password'}
+                       theme={{ colors: { text: isDarkMode ? '#ffffff' : '#000000', primary: isDarkMode ? '#bb86fc' : '#6200ee' } }}
+                     />
                 <Button mode="contained" onPress={handleConvert} style={styles.button}>
                   {isTextToMorse ? t('Convert to Morse Code') : t('Convert to Text')}
                 </Button>
