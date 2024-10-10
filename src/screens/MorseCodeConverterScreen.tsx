@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, Vibration } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, Vibration,BackHandler } from 'react-native';
 import { TextInput, Button, Card, Title, Paragraph, Provider as PaperProvider } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import { convertToMorse, convertToText } from '../utils/morseAlphabet'; // Import your Morse code conversion functions
@@ -9,7 +9,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads'; // Import Ad components
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // react-native-vector-icons kullanarak çarpı simgesini ekleyebilirsiniz.
 
 const MorseCodeConverter: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -37,7 +36,22 @@ const MorseCodeConverter: React.FC = () => {
       console.error('Error loading sound', error);
     }
   };
-
+  useEffect(() => {
+    // Define the back button handler
+    const handleBackPress = () => {
+      stopAll(); // Stop sounds and vibrations
+      return false; // Let the system handle the back action after stopping
+    };
+  
+    // Add event listener for the back button
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+  
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+  
   // Unload sound files
   const unloadSounds = async () => {
     try {
