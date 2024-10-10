@@ -65,6 +65,7 @@ const MorseCodeConverter: React.FC = () => {
 
   // Play Morse code with delay between each character
   const playMorseCode = async () => {
+    await stopAll(); // Oynatma başlamadan önce mevcut sesleri ve titreşimleri durdur
     setIsPlaying(true);
     for (let char of inputText) {
       const convertedChar = convertToMorse(char);
@@ -77,6 +78,7 @@ const MorseCodeConverter: React.FC = () => {
 
   // Vibrate for Morse code
   const vibrateMorseCode = async () => {
+    await stopAll(); // Oynatma başlamadan önce mevcut sesleri ve titreşimleri durdur
     for (let char of inputText) {
       const convertedChar = convertToMorse(char);
       for (let c of convertedChar) {
@@ -91,6 +93,7 @@ const MorseCodeConverter: React.FC = () => {
   };
 
   const handleConvert = () => {
+    stopAll(); // Dönüştürme yaparken de mevcut sesleri ve titreşimleri durdur
     if (isTextToMorse) {
       const converted = convertToMorse(inputText);
       setConvertedText(converted);
@@ -99,8 +102,13 @@ const MorseCodeConverter: React.FC = () => {
       setConvertedText(converted);
     }
   };
-
+  const stopAll = async () => {
+    Vibration.cancel(); // Titreşimleri durdur
+    await shortBeep.current.stopAsync(); // Kısa beep sesini durdur
+    await longBeep.current.stopAsync(); // Uzun beep sesini durdur
+  };
   const toggleConversionMode = () => {
+    stopAll(); // Mod değiştirirken ses ve titreşimleri durdur
     setIsTextToMorse(!isTextToMorse);
     setConvertedText(''); // Reset the converted text
     setInputText('');
